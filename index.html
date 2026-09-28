@@ -3,23 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Smash & Sold — Badminton Auction</title>
+<title>Smash &amp; Sold — Badminton Player Auction</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,800&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --court-deep:#0E3B2C;
-    --court:#134A38;
-    --court-light:#1C6B52;
-    --gold:#C9A227;
-    --gold-bright:#E4C158;
-    --cream:#F4F0E4;
-    --ink:#12201A;
-    --red:#B4432F;
-    --line: rgba(244,240,228,0.16);
-    --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
-    --font-ui: 'IBM Plex Sans', 'Segoe UI', Arial, sans-serif;
+    --court-deep:#0A3024;
+    --court:#0F4535;
+    --court-light:#17624A;
+    --gold:#D4AF37;
+    --gold-bright:#F2D26B;
+    --gold-deep:#A88420;
+    --cream:#F6F1E3;
+    --ink:#0E1A15;
+    --red:#C4553F;
+    --line:rgba(246,241,227,0.16);
+    --font-display:'Fraunces', Georgia, 'Times New Roman', serif;
+    --font-ui:'IBM Plex Sans', 'Segoe UI', Arial, sans-serif;
     box-sizing:border-box;
     padding-top: env(safe-area-inset-top, 0px);
     padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -27,270 +28,377 @@
   *,*::before,*::after{ box-sizing:inherit; }
   html{ scroll-padding-top: env(safe-area-inset-top, 0px); height:100%; }
   body{
-    margin:0;
-    min-height:100%;
+    margin:0; min-height:100%;
     background:
-      radial-gradient(ellipse at 20% -10%, rgba(228,193,88,0.10), transparent 45%),
-      radial-gradient(ellipse at 100% 0%, rgba(28,107,82,0.5), transparent 55%),
+      radial-gradient(ellipse 80% 50% at 50% -8%, rgba(242,210,107,0.22), transparent 62%),
+      radial-gradient(ellipse at 100% 100%, rgba(23,98,74,0.6), transparent 55%),
       var(--court-deep);
     color:var(--cream);
     font-family:var(--font-ui);
     line-height:1.5;
     -webkit-font-smoothing:antialiased;
   }
-  a{ color:inherit; }
+  /* faint badminton court lines behind everything */
+  body::before{
+    content:""; position:fixed; inset:0; z-index:0; pointer-events:none; opacity:0.075;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1340 610' fill='none' stroke='%23F6F1E3' stroke-width='5'%3E%3Crect x='3' y='3' width='1334' height='604'/%3E%3Cpath d='M76 3V607M1264 3V607M3 46H1337M3 564H1337M670 3V607M472 3V607M868 3V607M3 305H472M868 305H1337'/%3E%3C/svg%3E") center / cover no-repeat;
+  }
   button{ font-family:inherit; cursor:pointer; }
-  input,select{ font-family:inherit; }
+  input,select,textarea{ font-family:inherit; }
   ::selection{ background:var(--gold); color:var(--ink); }
+  :focus-visible{ outline:2px solid var(--gold-bright); outline-offset:2px; }
 
-  .app{ max-width:1180px; margin:0 auto; padding: 20px 20px 64px; }
+  .app{ position:relative; z-index:1; max-width:1200px; margin:0 auto; padding:20px 20px 72px; }
+  #confetti{ position:fixed; inset:0; width:100%; height:100%; z-index:60; pointer-events:none; }
 
   /* ---------- topbar ---------- */
   .topbar{
-    display:flex; align-items:center; justify-content:space-between;
-    gap:16px; padding: 6px 2px 26px;
-    border-bottom: 1px solid var(--line);
-    margin-bottom: 28px;
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+    padding:6px 2px 20px; border-bottom:1px solid var(--line); margin-bottom:26px;
   }
   .brand{ display:flex; align-items:center; gap:12px; }
-  .brand svg{ width:34px; height:34px; flex-shrink:0; }
-  .brand-text .kicker{ font-size:11px; letter-spacing:0.08em; color: var(--gold-bright); opacity:0.85; }
-  .brand-text h1{
-    font-family:var(--font-display); font-weight:600; font-size:22px; margin:0;
-    font-optical-sizing:auto;
-  }
-  .tourney-name{ font-size:13px; color:var(--cream); opacity:0.65; margin-top:2px; }
-  .topbar-actions{ display:flex; gap:10px; align-items:center; }
+  .brand svg{ width:38px; height:38px; flex-shrink:0; }
+  .brand-name{ font-family:var(--font-display); font-weight:700; font-size:22px; letter-spacing:.01em; line-height:1.1; }
+  .brand-sub{ font-size:12px; color:var(--gold-bright); opacity:.85; }
+  .topbar-actions{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
   .stage-pill{
-    font-size:12px; padding:6px 12px; border-radius:100px; border:1px solid var(--line);
-    color: var(--cream); opacity:0.75;
+    font-size:12.5px; padding:6px 14px; border-radius:100px;
+    border:1px solid rgba(212,175,55,.55); color:var(--gold-bright); background:rgba(212,175,55,.08);
   }
 
   /* ---------- buttons ---------- */
   .btn{
-    border-radius:10px; border:1px solid transparent; padding:11px 18px;
-    font-size:14px; font-weight:600; transition: transform .12s ease, background .15s ease, border-color .15s ease;
-    background: rgba(244,240,228,0.06); color:var(--cream); border-color:var(--line);
+    border-radius:12px; border:1px solid var(--line); padding:11px 18px; font-size:14px; font-weight:600;
+    background:rgba(246,241,227,.06); color:var(--cream);
+    transition: transform .12s ease, background .15s ease, border-color .15s ease, box-shadow .15s ease;
   }
-  .btn:hover:not(:disabled){ background: rgba(244,240,228,0.12); }
-  .btn:active:not(:disabled){ transform: scale(0.98); }
-  .btn:disabled{ opacity:0.35; cursor:not-allowed; }
-  .btn-gold{ background:var(--gold); color:var(--ink); border-color:var(--gold); }
-  .btn-gold:hover:not(:disabled){ background:var(--gold-bright); border-color:var(--gold-bright); }
+  .btn:hover:not(:disabled){ background:rgba(246,241,227,.13); }
+  .btn:active:not(:disabled){ transform:scale(.98); }
+  .btn:disabled{ opacity:.38; cursor:not-allowed; }
+  .btn-gold{
+    background:linear-gradient(180deg,#F7DE85,#D4AF37 55%,#B48A22);
+    color:var(--ink); border-color:#B48A22;
+    box-shadow:0 10px 26px -12px rgba(242,210,107,.7), inset 0 1px 0 rgba(255,255,255,.55);
+  }
+  .btn-gold:hover:not(:disabled){ background:linear-gradient(180deg,#FBE9A5,#E4BF48 55%,#C29A2C); }
   .btn-ghost{ background:transparent; }
-  .btn-red{ background:transparent; border-color: rgba(180,67,47,0.55); color:#E4A08F; }
-  .btn-red:hover:not(:disabled){ background: rgba(180,67,47,0.15); }
-  .btn-sm{ padding:7px 12px; font-size:12.5px; border-radius:8px; }
+  .btn-red{ background:transparent; border-color:rgba(196,85,63,.6); color:#F0A895; }
+  .btn-red:hover:not(:disabled){ background:rgba(196,85,63,.16); }
+  .btn-sm{ padding:7px 13px; font-size:12.5px; border-radius:9px; }
+  .btn-lg{ padding:16px 26px; font-size:17px; border-radius:14px; font-family:var(--font-display); font-weight:700; letter-spacing:.02em; }
   .btn-block{ width:100%; }
 
-  /* ---------- cards / panels ---------- */
+  /* ---------- panels & forms ---------- */
   .panel{
-    background: rgba(20,50,38,0.55);
-    border:1px solid var(--line);
-    border-radius:18px;
-    padding:26px;
+    position:relative;
+    background:linear-gradient(180deg, rgba(20,66,51,.74), rgba(9,40,30,.78));
+    border:1px solid var(--line); border-radius:20px; padding:26px;
+    box-shadow:0 22px 50px -28px rgba(0,0,0,.7);
+  }
+  .panel::before{
+    content:""; position:absolute; left:28px; right:28px; top:-1px; height:2px;
+    background:linear-gradient(90deg, transparent, var(--gold), transparent); opacity:.75;
   }
   .field{ margin-bottom:16px; }
-  .field label{ display:block; font-size:12.5px; color:var(--cream); opacity:0.7; margin-bottom:7px; }
+  .field label{ display:block; font-size:12.5px; opacity:.72; margin-bottom:7px; }
   .field input, .field select, .field textarea{
-    width:100%; background: rgba(12,32,24,0.6); border:1px solid var(--line);
-    color:var(--cream); border-radius:9px; padding:11px 12px; font-size:14.5px; outline:none;
+    width:100%; background:rgba(6,26,19,.65); border:1px solid var(--line); color:var(--cream);
+    border-radius:10px; padding:11px 12px; font-size:14.5px; outline:none;
   }
   .field input:focus, .field select:focus, .field textarea:focus{ border-color:var(--gold); }
+  .field input[type=checkbox]{ width:auto; accent-color:var(--gold); }
+  .field label.check{ display:flex; align-items:center; gap:9px; opacity:.92; font-size:13.5px; margin-bottom:0; }
   .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-  .hint{ font-size:12px; opacity:0.55; margin-top:6px; }
+  .hint{ font-size:12px; opacity:.58; margin:6px 0 0; }
+  h2.section-title{ font-family:var(--font-display); font-weight:700; font-size:22px; margin:0 0 4px; }
+  p.section-sub{ margin:0 0 22px; opacity:.68; font-size:13.5px; max-width:60ch; }
+  .chip{ display:inline-block; padding:3px 10px; border-radius:100px; font-size:11.5px; border:1px solid var(--line); background:rgba(246,241,227,.05); }
+  .chip.gold{ border-color:rgba(212,175,55,.6); color:var(--gold-bright); background:rgba(212,175,55,.1); }
+  [hidden]{ display:none !important; }
 
-  h2.section-title{
-    font-family:var(--font-display); font-weight:600; font-size:21px; margin: 0 0 4px;
+  /* ---------- SETUP ---------- */
+  .hero{ text-align:center; padding:18px 0 34px; }
+  .hero h1{
+    font-family:var(--font-display); font-weight:800; margin:0 0 10px;
+    font-size:clamp(46px, 9vw, 92px); line-height:1; letter-spacing:-.01em;
+    background:linear-gradient(100deg, var(--cream) 42%, var(--gold-bright) 50%, var(--cream) 58%);
+    background-size:260% 100%; background-position:100% 0;
+    -webkit-background-clip:text; background-clip:text; color:transparent; -webkit-text-fill-color:transparent;
+    animation:shimmer 2.6s ease .35s 1 forwards;
   }
-  p.section-sub{ margin:0 0 22px; opacity:0.65; font-size:13.5px; max-width:60ch; }
+  @keyframes shimmer{ to{ background-position:0% 0; } }
+  .hero p{ margin:0 auto; max-width:52ch; font-size:16px; opacity:.78; }
 
-  /* ---------- SETUP SCREEN ---------- */
-  #setup-screen .setup-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:22px; align-items:start; }
-  @media (max-width: 880px){ #setup-screen .setup-grid{ grid-template-columns:1fr; } }
+  .setup-grid{ display:grid; grid-template-columns:1fr 1fr; gap:22px; align-items:start; }
+  @media (max-width:880px){ .setup-grid{ grid-template-columns:1fr; } }
 
-  .team-slot{
-    display:flex; gap:10px; align-items:center; margin-bottom:10px;
-  }
+  .team-slot{ display:flex; gap:10px; align-items:center; margin-bottom:10px; }
   .team-slot .num{
-    width:26px; height:26px; border-radius:50%; border:1px solid var(--gold);
-    color:var(--gold-bright); font-size:12px; display:flex; align-items:center; justify-content:center;
-    flex-shrink:0; font-weight:600;
+    width:28px; height:28px; border-radius:50%; flex-shrink:0; font-size:12px; font-weight:700;
+    display:flex; align-items:center; justify-content:center; color:var(--ink); background:var(--tc, var(--gold));
   }
-  .team-slot input{ flex:1; }
-  .team-slot input.purse{ max-width:130px; flex:none; }
+  .team-slot input{
+    flex:1; min-width:0; background:rgba(6,26,19,.65); border:1px solid var(--line); color:var(--cream);
+    border-radius:10px; padding:10px 12px; font-size:14.5px; outline:none;
+  }
+  .team-slot input:focus{ border-color:var(--gold); }
+  .team-slot input.purse{ max-width:128px; flex:none; }
 
-  .player-add-row{ display:grid; grid-template-columns: 1.4fr 1fr 0.8fr auto; gap:10px; align-items:end; }
+  .player-add-row{ display:grid; grid-template-columns:1.4fr 1fr .8fr auto; gap:10px; align-items:end; }
   @media (max-width:600px){ .player-add-row{ grid-template-columns:1fr 1fr; } }
-
-  .player-mini-list{ margin-top:16px; max-height:260px; overflow-y:auto; padding-right:4px; }
+  .player-mini-list{ margin-top:16px; max-height:230px; overflow-y:auto; padding-right:4px; }
   .player-mini{
     display:flex; align-items:center; justify-content:space-between; gap:10px;
     padding:9px 4px; border-bottom:1px solid var(--line); font-size:13.5px;
   }
-  .player-mini .meta{ opacity:0.6; font-size:12px; }
-  .chip{ display:inline-block; padding:2px 8px; border-radius:100px; font-size:11px; border:1px solid var(--line); opacity:0.85; }
-  .remove-x{ background:none; border:none; color:#E4A08F; font-size:16px; line-height:1; opacity:0.7; }
+  .player-mini .meta{ opacity:.6; font-size:12px; }
+  .remove-x{ background:none; border:none; color:#F0A895; font-size:16px; line-height:1; opacity:.7; }
   .remove-x:hover{ opacity:1; }
-
-  details.bulk{ margin-top:18px; }
+  details.bulk{ margin-top:16px; }
   details.bulk summary{ cursor:pointer; font-size:13px; color:var(--gold-bright); }
-  details.bulk textarea{ margin-top:10px; min-height:96px; font-family: monospace; font-size:12.5px; }
+  details.bulk textarea{ margin-top:10px; min-height:90px; font-family:monospace; font-size:12.5px; }
+  .batch-box{ margin-top:20px; padding:18px; border:1px dashed rgba(212,175,55,.45); border-radius:14px; background:rgba(212,175,55,.05); }
+  .batch-plan{ margin-top:14px; font-size:13.5px; color:var(--gold-bright); }
+  .setup-cta{ margin-top:24px; display:flex; align-items:center; gap:14px; justify-content:flex-end; flex-wrap:wrap; }
+  .setup-error{ color:#F0A895; font-size:13px; margin-right:auto; }
 
-  .setup-cta{ margin-top:22px; display:flex; align-items:center; gap:14px; justify-content:flex-end; }
-  .setup-error{ color:#E4A08F; font-size:13px; margin-right:auto; }
+  /* ---------- AUCTION: stepper ---------- */
+  .stepper{ display:flex; align-items:center; overflow-x:auto; padding:6px 2px 20px; margin-bottom:6px; }
+  .step{ display:flex; align-items:center; gap:10px; flex-shrink:0; }
+  .step-dot{
+    width:38px; height:38px; border-radius:50%; border:1.5px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-display); font-weight:700; font-size:16px; opacity:.6;
+  }
+  .step-text{ font-size:13px; line-height:1.25; opacity:.6; }
+  .step-text small{ display:block; font-size:11.5px; opacity:.8; }
+  .step.done .step-dot{ background:var(--gold); color:var(--ink); border-color:var(--gold); opacity:1; }
+  .step.done .step-text{ opacity:.85; }
+  .step.current .step-dot{ opacity:1; border-color:var(--gold-bright); color:var(--gold-bright); box-shadow:0 0 0 5px rgba(242,210,107,.16); }
+  .step.current .step-text{ opacity:1; font-weight:600; }
+  .step-line{ width:46px; height:2px; background:var(--line); margin:0 14px; flex-shrink:0; }
+  .step-line.done{ background:var(--gold); }
 
-  /* ---------- AUCTION SCREEN ---------- */
-  #auction-screen{ display:grid; grid-template-columns: 1.35fr 1fr; gap:22px; align-items:start; }
-  @media (max-width: 980px){ #auction-screen{ grid-template-columns:1fr; } }
+  /* ---------- AUCTION: wheel + block ---------- */
+  .stage-grid{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.15fr); gap:22px; align-items:stretch; margin-bottom:22px; }
+  @media (max-width:980px){ .stage-grid{ grid-template-columns:1fr; } }
+  .wheel-head{ display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:18px; flex-wrap:wrap; }
+  .wheel-wrap{ position:relative; width:100%; max-width:470px; margin:34px auto 22px; }
+  .wheel-wrap canvas{ display:block; width:100%; height:auto; filter:drop-shadow(0 18px 30px rgba(0,0,0,.45)); }
+  .wheel-pointer{
+    position:absolute; left:50%; top:-30px; width:42px; height:54px; transform:translateX(-50%); z-index:2;
+    filter:drop-shadow(0 4px 6px rgba(0,0,0,.5));
+  }
+  #spin-btn{ width:100%; }
+
+  .batch-done{ text-align:center; padding:26px 8px 8px; }
+  .batch-done .trophy{ width:74px; height:74px; margin:0 auto 12px; }
+  .batch-done h3{ font-family:var(--font-display); font-size:28px; margin:0 0 6px; }
+  .batch-done p{ opacity:.72; margin:0 auto 18px; max-width:38ch; font-size:14px; }
+  .batch-stats{ display:flex; gap:10px; justify-content:center; margin-bottom:22px; flex-wrap:wrap; }
+  .batch-stats div{ border:1px solid var(--line); border-radius:12px; padding:10px 16px; min-width:92px; background:rgba(246,241,227,.05); }
+  .batch-stats b{ display:block; font-family:var(--font-display); font-size:22px; color:var(--gold-bright); }
+  .batch-stats span{ font-size:11.5px; opacity:.7; }
 
   .auction-block{
+    position:relative; overflow:hidden; min-height:440px; display:flex; flex-direction:column;
+    border-radius:22px; padding:34px;
     background:
-      radial-gradient(circle at 30% 0%, rgba(228,193,88,0.12), transparent 55%),
-      rgba(9,30,22,0.65);
-    border:1px solid var(--line); border-radius:20px; padding:32px; position:relative; overflow:hidden;
-    min-height: 360px; display:flex; flex-direction:column;
+      radial-gradient(circle at 50% 0%, rgba(242,210,107,.17), transparent 62%),
+      linear-gradient(180deg,#0E3A2C,#082419);
+    border:1px solid rgba(212,175,55,.55);
+    box-shadow: inset 0 0 0 6px #082419, inset 0 0 0 7px rgba(212,175,55,.35), 0 26px 60px -30px rgba(0,0,0,.75);
   }
-  .queue-progress{ font-size:12px; opacity:0.6; margin-bottom:14px; }
-  .player-category{ display:inline-block; margin-bottom:10px; }
-  .player-name{
-    font-family:var(--font-display); font-weight:600; font-size: clamp(30px, 5vw, 48px);
-    margin:0 0 6px; line-height:1.05;
+  .queue-progress{ font-size:12px; opacity:.62; margin-bottom:16px; }
+  .block-tags{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+  .spotlight{ display:flex; align-items:center; gap:22px; margin:2px 0 22px; }
+  .medallion{
+    width:88px; height:88px; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    background:radial-gradient(circle at 30% 25%, #FBE9A5, #C79E2B 70%);
+    color:var(--ink); font-family:var(--font-display); font-weight:800; font-size:34px;
+    box-shadow:0 0 0 4px #082419, 0 0 0 6px rgba(212,175,55,.65), 0 14px 30px -10px rgba(0,0,0,.7);
   }
-  .player-base{ opacity:0.65; font-size:14px; margin-bottom:22px; }
-  .no-player{ margin:auto; text-align:center; opacity:0.6; font-size:15px; }
+  .player-name{ font-family:var(--font-display); font-weight:800; font-size:clamp(30px,4.6vw,50px); line-height:1.04; margin:0 0 4px; }
+  .player-base{ opacity:.7; font-size:14px; }
+  .reveal .spotlight{ animation:reveal .7s cubic-bezier(.2,.9,.3,1.15); }
+  @keyframes reveal{ from{ opacity:0; transform:scale(.82) translateY(14px); } to{ opacity:1; transform:none; } }
+
+  .no-player{ margin:auto; text-align:center; max-width:34ch; }
+  .no-player svg{ width:56px; height:56px; opacity:.85; margin-bottom:10px; }
+  .no-player h3{ font-family:var(--font-display); font-size:26px; margin:0 0 6px; }
+  .no-player p{ opacity:.7; margin:0; font-size:14px; }
 
   .bid-status{
-    background: rgba(0,0,0,0.18); border:1px solid var(--line); border-radius:14px;
-    padding:16px 18px; margin-bottom:20px;
+    border:1px solid var(--line); border-radius:16px; padding:16px 20px; margin-bottom:18px;
+    background:rgba(0,0,0,.22);
   }
-  .bid-status .label{ font-size:11.5px; opacity:0.6; letter-spacing:.02em; }
+  .bid-status .label{ font-size:11.5px; opacity:.62; }
   .bid-status .amount{
-    font-family:var(--font-display); font-size:30px; font-weight:600; color:var(--gold-bright); margin:2px 0 2px;
+    font-family:var(--font-display); font-weight:800; font-size:42px; line-height:1.1; margin:2px 0;
+    color:var(--gold-bright); text-shadow:0 0 22px rgba(242,210,107,.35);
   }
-  .bid-status .leader{ font-size:13.5px; opacity:0.85; }
+  .bid-status .amount.bump{ animation:bump .38s ease; }
+  @keyframes bump{ 0%{ transform:scale(1); } 40%{ transform:scale(1.14); } 100%{ transform:scale(1); } }
+  .bid-status .leader{ font-size:14px; display:flex; align-items:center; gap:8px; }
+  .dot{ width:10px; height:10px; border-radius:50%; background:var(--tc, var(--gold)); display:inline-block; flex-shrink:0; }
+  .going{ margin-top:8px; font-family:var(--font-display); font-weight:700; font-size:18px; color:var(--gold-bright); animation:goingPulse .9s ease-in-out infinite alternate; }
+  @keyframes goingPulse{ from{ opacity:.55; } to{ opacity:1; } }
 
-  .next-bid-row{ display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
-  .next-bid-row label{ font-size:12.5px; opacity:0.65; }
-  .next-bid-row input{ width:120px; }
-
-  .team-bid-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:10px; margin-bottom:22px; }
+  .next-bid-row{ display:flex; align-items:center; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+  .next-bid-row label{ font-size:12.5px; opacity:.7; }
+  .next-bid-row input{
+    width:120px; background:rgba(6,26,19,.65); border:1px solid var(--line); color:var(--cream);
+    border-radius:10px; padding:8px 10px; font-size:14px; outline:none;
+  }
+  .team-bid-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; margin-bottom:20px; }
   .team-bid-btn{
-    text-align:left; border-radius:12px; border:1px solid var(--line); background:rgba(244,240,228,0.05);
-    padding:12px 13px; transition: border-color .15s ease, background .15s ease, transform .12s ease;
-    color:var(--cream);
+    text-align:left; color:var(--cream); padding:12px 13px; border-radius:12px;
+    border:1px solid var(--line); border-left:5px solid var(--tc, var(--gold)); background:rgba(246,241,227,.05);
+    transition:transform .12s ease, background .15s ease, border-color .15s ease;
   }
-  .team-bid-btn:hover:not(:disabled){ border-color:var(--gold); background:rgba(201,162,39,0.12); }
-  .team-bid-btn:active:not(:disabled){ transform: scale(0.98); }
-  .team-bid-btn:disabled{ opacity:0.3; cursor:not-allowed; }
-  .team-bid-btn.leading{ border-color:var(--gold); background: rgba(201,162,39,0.18); }
-  .team-bid-btn .t-name{ font-weight:600; font-size:14px; margin-bottom:4px; display:flex; align-items:center; gap:6px;}
-  .team-bid-btn .t-purse{ font-size:12px; opacity:0.65; }
-  .team-bid-btn .t-bid{ font-size:12.5px; margin-top:6px; color:var(--gold-bright); }
-  .leading-tag{ font-size:9.5px; background:var(--gold); color:var(--ink); padding:1px 6px; border-radius:100px; font-weight:700; letter-spacing:.03em; }
+  .team-bid-btn:hover:not(:disabled){ background:rgba(246,241,227,.12); border-color:var(--tc, var(--gold)); }
+  .team-bid-btn:active:not(:disabled){ transform:scale(.97); }
+  .team-bid-btn:disabled{ opacity:.35; cursor:not-allowed; }
+  .team-bid-btn.leading{ opacity:1; background:rgba(212,175,55,.16); border-color:var(--gold); }
+  .team-bid-btn .t-name{ font-weight:600; font-size:14px; margin-bottom:3px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .team-bid-btn .t-purse{ font-size:12px; opacity:.68; }
+  .team-bid-btn .t-bid{ font-size:12.5px; margin-top:6px; color:var(--gold-bright); font-weight:600; }
+  .leading-tag{ font-size:10px; background:var(--gold); color:var(--ink); padding:1px 7px; border-radius:100px; font-weight:700; }
 
-  .auction-actions{ display:flex; gap:12px; margin-top:auto; flex-wrap:wrap; }
+  .auction-actions{ display:flex; gap:10px; margin-top:auto; flex-wrap:wrap; align-items:center; }
+  .auction-actions .btn-gold{ flex:1 1 200px; }
 
   .stamp-overlay{
-    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-    background: rgba(6,20,14,0.55); backdrop-filter: blur(2px);
-    opacity:0; pointer-events:none; transition: opacity .18s ease;
+    position:absolute; inset:0; z-index:5; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+    background:rgba(4,18,12,.72); backdrop-filter:blur(3px);
+    opacity:0; pointer-events:none; transition:opacity .2s ease; text-align:center; padding:20px;
   }
   .stamp-overlay.show{ opacity:1; pointer-events:auto; }
   .stamp-word{
-    font-family:var(--font-display); font-weight:700; font-size:54px; letter-spacing:.04em;
-    border:5px solid currentColor; padding:8px 30px; border-radius:10px;
-    transform: rotate(-8deg) scale(0.6); opacity:0;
-    animation: stampIn .45s cubic-bezier(.2,1.4,.4,1) forwards;
+    font-family:var(--font-display); font-weight:800; font-size:clamp(52px,9vw,88px); letter-spacing:.05em;
+    border:6px solid currentColor; padding:6px 34px; border-radius:14px; transform:rotate(-7deg);
   }
-  .stamp-word.sold{ color:var(--gold-bright); }
-  .stamp-word.unsold{ color:#E4A08F; }
-  @keyframes stampIn{ to{ transform: rotate(-8deg) scale(1); opacity:1; } }
+  .stamp-overlay.show .stamp-word{ animation:stampIn .5s cubic-bezier(.2,1.5,.4,1) both; }
+  .stamp-word.sold{ color:var(--gold-bright); text-shadow:0 0 30px rgba(242,210,107,.55); }
+  .stamp-word.unsold{ color:#F0A895; }
+  @keyframes stampIn{ from{ transform:rotate(-7deg) scale(2.2); opacity:0; } to{ transform:rotate(-7deg) scale(1); opacity:1; } }
+  .stamp-sub{ font-size:18px; }
+  .stamp-sub b{ color:var(--gold-bright); }
 
-  /* ---------- side column: teams + queue ---------- */
-  .side-col{ display:flex; flex-direction:column; gap:18px; }
-  .teams-overview{ display:flex; flex-direction:column; gap:10px; max-height:340px; overflow-y:auto; padding-right:4px; }
-  .team-card{ border:1px solid var(--line); border-radius:13px; padding:13px 14px; background: rgba(244,240,228,0.04); }
-  .team-card .row1{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; }
+  /* ---------- lower grid ---------- */
+  .lower-grid{ display:grid; grid-template-columns:1fr 1fr; gap:22px; align-items:start; }
+  @media (max-width:980px){ .lower-grid{ grid-template-columns:1fr; } }
+  .panel h3.panel-title{ font-family:var(--font-display); font-size:18px; margin:0 0 14px; }
+  .teams-overview{ display:flex; flex-direction:column; gap:10px; max-height:360px; overflow-y:auto; padding-right:4px; }
+  .team-card{ border:1px solid var(--line); border-left:5px solid var(--tc, var(--gold)); border-radius:13px; padding:12px 14px; background:rgba(246,241,227,.04); }
+  .team-card .row1{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; gap:8px; }
   .team-card .t-name{ font-weight:600; font-size:14px; }
-  .team-card .t-count{ font-size:11.5px; opacity:0.6; }
-  .purse-bar{ height:6px; border-radius:4px; background: rgba(244,240,228,0.1); overflow:hidden; margin-bottom:6px; }
-  .purse-bar > div{ height:100%; background: linear-gradient(90deg, var(--gold), var(--gold-bright)); }
-  .purse-figures{ display:flex; justify-content:space-between; font-size:11.5px; opacity:0.7; }
-
-  .tabs{ display:flex; gap:6px; border-bottom:1px solid var(--line); margin-bottom:12px; }
-  .tab-btn{ background:none; border:none; color:var(--cream); opacity:0.55; padding:8px 4px; font-size:13px; border-bottom:2px solid transparent; }
+  .team-card .t-count{ font-size:11.5px; opacity:.62; }
+  .purse-bar{ height:6px; border-radius:4px; background:rgba(246,241,227,.1); overflow:hidden; margin-bottom:6px; }
+  .purse-bar > div{ height:100%; background:var(--tc, var(--gold)); transition:width .5s ease; }
+  .purse-figures{ display:flex; justify-content:space-between; font-size:11.5px; opacity:.72; }
+  .tabs{ display:flex; gap:14px; border-bottom:1px solid var(--line); margin-bottom:12px; }
+  .tab-btn{ background:none; border:none; color:var(--cream); opacity:.55; padding:8px 2px; font-size:13.5px; border-bottom:2px solid transparent; }
   .tab-btn.active{ opacity:1; border-bottom-color:var(--gold); font-weight:600; }
-  .queue-list{ max-height:260px; overflow-y:auto; display:flex; flex-direction:column; gap:6px; padding-right:4px; }
+  .queue-list{ max-height:300px; overflow-y:auto; display:flex; flex-direction:column; gap:6px; padding-right:4px; }
   .queue-item{
     display:flex; justify-content:space-between; align-items:center; gap:10px;
-    padding:9px 10px; border:1px solid var(--line); border-radius:10px; font-size:13px;
-    background: rgba(244,240,228,0.03);
+    padding:9px 11px; border:1px solid var(--line); border-radius:10px; font-size:13px; background:rgba(246,241,227,.035);
   }
-  .queue-item button{ flex-shrink:0; }
-  .queue-empty{ opacity:0.5; font-size:13px; padding:10px 2px; }
+  .queue-item .meta{ opacity:.6; font-size:12px; }
+  .queue-empty{ opacity:.55; font-size:13px; padding:10px 2px; }
+  .finish-row{ margin-top:26px; display:flex; justify-content:flex-end; }
 
-  /* ---------- RESULTS SCREEN ---------- */
-  .results-summary{ display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px; margin-bottom:26px; }
-  .stat-card{ border:1px solid var(--line); border-radius:14px; padding:16px 18px; background: rgba(244,240,228,0.04); }
-  .stat-card .num{ font-family:var(--font-display); font-size:26px; font-weight:600; color:var(--gold-bright); }
-  .stat-card .lbl{ font-size:12px; opacity:0.65; margin-top:2px; }
-
-  .results-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; }
-  .result-team{ border:1px solid var(--line); border-radius:16px; padding:18px 20px; background: rgba(244,240,228,0.04); }
-  .result-team h3{ font-family:var(--font-display); margin:0 0 4px; font-size:18px; }
-  .result-team .rt-purse{ font-size:12.5px; opacity:0.65; margin-bottom:12px; }
+  /* ---------- RESULTS ---------- */
+  .results-head{ text-align:center; padding:8px 0 26px; }
+  .results-head h2{
+    font-family:var(--font-display); font-weight:800; margin:0 0 6px; font-size:clamp(34px,6vw,60px); line-height:1.05;
+    color:var(--gold-bright); text-shadow:0 0 34px rgba(242,210,107,.35);
+  }
+  .results-head p{ margin:0; opacity:.72; }
+  .results-summary{ display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:14px; margin-bottom:26px; }
+  .stat-card{ border:1px solid var(--line); border-radius:16px; padding:16px 18px; background:rgba(246,241,227,.05); }
+  .stat-card .num{ font-family:var(--font-display); font-weight:800; font-size:28px; color:var(--gold-bright); line-height:1.15; }
+  .stat-card .lbl{ font-size:12px; opacity:.68; margin-top:2px; }
+  .results-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:16px; }
+  .result-team{
+    border:1px solid var(--line); border-top:5px solid var(--tc, var(--gold)); border-radius:16px;
+    padding:18px 20px; background:rgba(246,241,227,.045);
+  }
+  .result-team h3{ font-family:var(--font-display); margin:0 0 4px; font-size:20px; }
+  .result-team .rt-purse{ font-size:12.5px; opacity:.68; margin-bottom:12px; }
   .result-team ul{ list-style:none; margin:0; padding:0; }
-  .result-team li{ display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--line); font-size:13.5px; }
+  .result-team li{ display:flex; justify-content:space-between; gap:10px; padding:7px 0; border-bottom:1px solid var(--line); font-size:13.5px; }
   .result-team li:last-child{ border-bottom:none; }
-  .result-team .price{ color:var(--gold-bright); font-weight:600; }
-  .result-team .empty{ opacity:0.5; font-size:13px; padding:6px 0; }
+  .result-team .price{ color:var(--gold-bright); font-weight:600; white-space:nowrap; }
+  .result-team .empty{ opacity:.55; font-size:13px; }
+  .results-actions{ display:flex; gap:12px; margin-top:28px; justify-content:center; flex-wrap:wrap; }
 
-  .results-actions{ display:flex; gap:12px; margin-top:28px; justify-content:flex-end; flex-wrap:wrap; }
+  /* ---------- toast ---------- */
+  .toast{
+    position:fixed; left:50%; bottom:calc(24px + env(safe-area-inset-bottom, 0px)); z-index:80;
+    transform:translate(-50%, 20px); opacity:0; pointer-events:none;
+    background:#082419; color:var(--cream); border:1px solid var(--gold); border-radius:12px;
+    padding:11px 18px; font-size:13.5px; max-width:90vw; text-align:center;
+    box-shadow:0 14px 34px -12px rgba(0,0,0,.7); transition:opacity .2s ease, transform .2s ease;
+  }
+  .toast.show{ opacity:1; transform:translate(-50%, 0); }
 
-  [hidden]{ display:none !important; }
-
+  @media (max-width:560px){
+    .auction-block{ padding:24px 20px; }
+    .spotlight{ gap:16px; }
+    .medallion{ width:68px; height:68px; font-size:26px; }
+  }
   @media print{
     body{ background:#fff; color:#111; }
-    .topbar-actions, .results-actions{ display:none; }
-    .panel, .result-team, .stat-card{ border-color:#ccc; background:#fff; }
-    .stat-card .num, .price{ color:#7a5c00; }
+    body::before, #confetti, .topbar, .results-actions, .toast{ display:none !important; }
+    .panel, .result-team, .stat-card{ background:#fff; border-color:#ccc; box-shadow:none; }
+    .results-head h2, .stat-card .num, .result-team .price{ color:#7a5c00; text-shadow:none; }
   }
-
   @media (prefers-reduced-motion: reduce){
-    .stamp-word{ animation:none; opacity:1; transform:none; }
-    .btn{ transition:none; }
+    .hero h1{ animation:none; background-position:0 0; }
+    .going, .bid-status .amount.bump, .reveal .spotlight, .stamp-overlay.show .stamp-word{ animation:none; }
+    .btn, .purse-bar > div{ transition:none; }
   }
 </style>
 </head>
 <body>
+<canvas id="confetti" aria-hidden="true"></canvas>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <div class="app">
 
   <div class="topbar">
     <div class="brand">
-      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="20" cy="20" r="19" stroke="#C9A227" stroke-width="1.5"/>
-        <path d="M20 8 L20 20 M20 20 L11 13 M20 20 L14 8.5 M20 20 L26 8.5 M20 20 L29 13" stroke="#E4C158" stroke-width="1.3" stroke-linecap="round"/>
-        <circle cx="20" cy="22.5" r="3.4" fill="#C9A227"/>
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="20" cy="20" r="19" stroke="#D4AF37" stroke-width="1.5"/>
+        <path d="M20 8 L20 20 M20 20 L11 13 M20 20 L14 8.5 M20 20 L26 8.5 M20 20 L29 13" stroke="#F2D26B" stroke-width="1.3" stroke-linecap="round"/>
+        <circle cx="20" cy="22.5" r="3.6" fill="#D4AF37"/>
       </svg>
-      <div class="brand-text">
-        <div class="kicker">SMASH &amp; SOLD</div>
-        <h1>Player Auction</h1>
+      <div>
+        <div class="brand-name">Smash &amp; Sold</div>
+        <div class="brand-sub">Badminton player auction</div>
       </div>
     </div>
     <div class="topbar-actions">
       <span class="stage-pill" id="stage-pill">Setup</span>
-      <button class="btn btn-ghost btn-sm" id="reset-btn" title="Start over">Reset</button>
+      <button class="btn btn-ghost btn-sm" id="sound-btn" title="Turn sound on or off">Sound on</button>
+      <button class="btn btn-ghost btn-sm" id="reset-btn" title="Clear everything and start over">Reset</button>
     </div>
   </div>
 
-  <!-- ================= SETUP SCREEN ================= -->
+  <!-- ================= SETUP ================= -->
   <section id="setup-screen">
-    <div class="setup-grid">
+    <div class="hero">
+      <h1>Let the bidding begin</h1>
+      <p>Set your teams and budgets, load the players, then spin the wheel and sell them batch by batch.</p>
+    </div>
 
+    <div class="setup-grid">
       <div class="panel">
         <h2 class="section-title">Teams &amp; budget</h2>
-        <p class="section-sub">Set how many teams are bidding and how much purse each one starts with.</p>
+        <p class="section-sub">Choose how many teams are bidding and how much purse each starts with.</p>
 
         <div class="field-row">
           <div class="field">
@@ -298,32 +406,30 @@
             <input type="text" id="tournament-name" placeholder="e.g. Office Shuttle League 2026">
           </div>
           <div class="field">
-            <label for="bid-increment">Default bid increment (₹)</label>
+            <label for="bid-increment">Bid increment (₹)</label>
             <input type="number" id="bid-increment" value="500" min="1">
           </div>
         </div>
-
         <div class="field-row">
           <div class="field">
             <label for="num-teams">Number of teams</label>
             <input type="number" id="num-teams" value="4" min="2" max="12">
           </div>
           <div class="field">
-            <label for="default-purse">Default purse per team (₹)</label>
+            <label for="default-purse">Purse per team (₹)</label>
             <input type="number" id="default-purse" value="10000" min="1">
           </div>
         </div>
-
-        <div class="field">
+        <div class="field" style="margin-bottom:0;">
           <label>Team names &amp; purse</label>
           <div id="team-slots"></div>
-          <p class="hint">Change any team's purse individually if needed — otherwise it uses the default above.</p>
+          <p class="hint">Edit any team's purse on its own row if it should differ from the default.</p>
         </div>
       </div>
 
       <div class="panel">
-        <h2 class="section-title">Player pool</h2>
-        <p class="section-sub">Add every player who'll go under the hammer, with their category and base price.</p>
+        <h2 class="section-title">Player pool &amp; batches</h2>
+        <p class="section-sub">Add every player going under the hammer. They're split into batches, and the wheel picks from one batch at a time.</p>
 
         <div class="player-add-row">
           <div class="field" style="margin-bottom:0;">
@@ -354,59 +460,98 @@
         <details class="bulk">
           <summary>Bulk-add players by pasting a list</summary>
           <textarea id="bulk-text" placeholder="One player per line: Name, Category, BasePrice&#10;e.g.&#10;Arjun Rao, Men's Singles, 1000&#10;Sana Iyer, Women's Doubles, 800"></textarea>
-          <div style="margin-top:8px;">
-            <button class="btn btn-sm" id="bulk-import-btn">Import list</button>
-          </div>
+          <div style="margin-top:8px;"><button class="btn btn-sm" id="bulk-import-btn">Import list</button></div>
         </details>
-      </div>
 
+        <div class="batch-box">
+          <div class="field-row">
+            <div class="field" style="margin-bottom:0;">
+              <label for="batch-size">Players per batch</label>
+              <input type="number" id="batch-size" value="8" min="1">
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label class="check" style="margin-top:28px;"><input type="checkbox" id="shuffle-check" checked> Shuffle players into batches</label>
+            </div>
+          </div>
+          <p class="hint">Shuffle off means batches follow the order you added the players.</p>
+          <div class="batch-plan" id="batch-plan"></div>
+        </div>
+      </div>
     </div>
 
     <div class="setup-cta">
-      <span class="setup-error" id="setup-error"></span>
-      <button class="btn btn-gold" id="start-auction-btn">Start the auction →</button>
+      <span class="setup-error" id="setup-error" role="alert"></span>
+      <button class="btn btn-gold btn-lg" id="start-auction-btn">Start the auction</button>
     </div>
   </section>
 
-  <!-- ================= AUCTION SCREEN ================= -->
+  <!-- ================= AUCTION ================= -->
   <section id="auction-screen" hidden>
+    <div class="stepper" id="stepper"></div>
 
-    <div class="auction-block">
-      <div class="stamp-overlay" id="stamp-overlay"><div class="stamp-word" id="stamp-word"></div></div>
-      <div class="queue-progress" id="queue-progress"></div>
-      <div id="auction-current"></div>
-    </div>
+    <div class="stage-grid">
+      <div class="panel" id="wheel-panel">
+        <div class="wheel-head">
+          <h2 class="section-title" id="wheel-title" style="margin:0;">Batch 1</h2>
+          <span class="hint" id="wheel-sub" style="margin:0;"></span>
+        </div>
 
-    <div class="side-col">
-      <div class="panel">
-        <h2 class="section-title" style="font-size:16px;">Teams</h2>
-        <div class="teams-overview" id="teams-overview"></div>
+        <div id="wheel-stage">
+          <div class="wheel-wrap">
+            <svg class="wheel-pointer" viewBox="0 0 40 54" aria-hidden="true">
+              <defs><linearGradient id="pg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FBE9A5"/><stop offset="1" stop-color="#B48A22"/></linearGradient></defs>
+              <path d="M20 52 L3.5 20 A17.5 17.5 0 1 1 36.5 20 Z" fill="url(#pg)" stroke="#0E1A15" stroke-width="2.5" stroke-linejoin="round"/>
+              <circle cx="20" cy="18" r="6.5" fill="#0E1A15"/>
+            </svg>
+            <canvas id="wheel" width="960" height="960" role="img" aria-label="Wheel of players in the current batch"></canvas>
+          </div>
+          <button class="btn btn-gold btn-lg" id="spin-btn">Spin the wheel</button>
+        </div>
+
+        <div id="batch-done" class="batch-done" hidden></div>
       </div>
 
+      <div class="auction-block" id="auction-block">
+        <div class="stamp-overlay" id="stamp-overlay">
+          <div class="stamp-word" id="stamp-word"></div>
+          <div class="stamp-sub" id="stamp-sub"></div>
+        </div>
+        <div class="queue-progress" id="queue-progress"></div>
+        <div id="auction-current" style="display:flex; flex-direction:column; flex:1;"></div>
+      </div>
+    </div>
+
+    <div class="lower-grid">
+      <div class="panel">
+        <h3 class="panel-title">Teams &amp; purses</h3>
+        <div class="teams-overview" id="teams-overview"></div>
+      </div>
       <div class="panel">
         <div class="tabs">
-          <button class="tab-btn active" data-tab="pending">Pending</button>
+          <button class="tab-btn active" data-tab="pending">This batch</button>
           <button class="tab-btn" data-tab="sold">Sold</button>
           <button class="tab-btn" data-tab="unsold">Unsold</button>
         </div>
         <div class="queue-list" id="queue-list"></div>
       </div>
-
-      <button class="btn btn-gold btn-block" id="finish-auction-btn" disabled>Finish auction &amp; see results</button>
     </div>
 
+    <div class="finish-row">
+      <button class="btn" id="finish-auction-btn">Finish auction &amp; see results</button>
+    </div>
   </section>
 
-  <!-- ================= RESULTS SCREEN ================= -->
+  <!-- ================= RESULTS ================= -->
   <section id="results-screen" hidden>
-    <h2 class="section-title" id="results-title">Auction results</h2>
-    <p class="section-sub">Final squads and spending, ready to share or print.</p>
-
+    <div class="results-head">
+      <h2 id="results-title">Auction results</h2>
+      <p>Final squads and spending, ready to share or print.</p>
+    </div>
     <div class="results-summary" id="results-summary"></div>
     <div class="results-grid" id="results-grid"></div>
-
     <div class="results-actions">
       <button class="btn" id="print-btn">Print / save as PDF</button>
+      <button class="btn" id="back-btn">Back to the auction</button>
       <button class="btn btn-red" id="new-auction-btn">Start a new auction</button>
     </div>
   </section>
@@ -417,496 +562,689 @@
 (function(){
   "use strict";
 
-  var STORAGE_KEY = "smashSoldAuctionState_v1";
+  const STORAGE_KEY = "smashSoldAuction_v2";
+  const TEAM_COLORS = ["#F28B6E","#6EC3E8","#B79CEB","#7EDDB1","#F5B14E","#E98FB5","#C8DE62","#4FD1C5","#F0873A","#8FA6F2","#DCC79E","#E56B7D"];
+  const WHEEL_COLORS = [
+    { bg:"#0F4535", fg:"#F6F1E3" },
+    { bg:"#D4AF37", fg:"#0E1A15" },
+    { bg:"#1B6B51", fg:"#F6F1E3" },
+    { bg:"#F6F1E3", fg:"#0E1A15" }
+  ];
+  const TAU = Math.PI * 2;
+  const MARK_SVG = '<svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><circle cx="20" cy="20" r="19" stroke="#D4AF37" stroke-width="1.5"/><path d="M20 8 L20 20 M20 20 L11 13 M20 20 L14 8.5 M20 20 L26 8.5 M20 20 L29 13" stroke="#F2D26B" stroke-width="1.3" stroke-linecap="round"/><circle cx="20" cy="22.5" r="3.6" fill="#D4AF37"/></svg>';
+  const TROPHY_SVG = '<svg class="trophy" viewBox="0 0 64 64" fill="none" aria-hidden="true"><path d="M20 8h24v18a12 12 0 0 1-24 0V8Z" fill="#D4AF37" stroke="#F2D26B" stroke-width="2"/><path d="M20 12H10v6a10 10 0 0 0 10 10M44 12h10v6a10 10 0 0 1-10 10" stroke="#F2D26B" stroke-width="2.5" stroke-linecap="round"/><path d="M32 38v10M22 56h20M25 48h14v8H25z" stroke="#F2D26B" stroke-width="2.5" stroke-linejoin="round" fill="#A88420"/></svg>';
 
-  var state = {
-    stage: "setup",               // setup | auction | results
-    tournamentName: "",
-    increment: 500,
-    teams: [],                    // {id,name,purse,spent,players:[{id,name,category,price}]}
-    players: [],                  // {id,name,category,basePrice,status:'pending'|'sold'|'unsold',soldTeamId,soldPrice}
-    currentPlayerId: null,
-    currentBid: null,             // {amount, teamId}
-    activeTab: "pending"
-  };
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const fmt = (n) => "₹" + (Number(n) || 0).toLocaleString("en-IN");
+  const uid = (p) => p + "_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const reduceMotion = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
-  var draftPlayers = [];          // players staged during setup, before auction starts
-  var uid = function(prefix){ return prefix + "_" + Date.now().toString(36) + Math.random().toString(36).slice(2,7); };
+  function randInt(n){
+    try{ const a = new Uint32Array(1); window.crypto.getRandomValues(a); return a[0] % n; }
+    catch(e){ return Math.floor(Math.random() * n); }
+  }
+  function shuffle(arr){
+    for(let i = arr.length - 1; i > 0; i--){ const j = randInt(i + 1); const t = arr[i]; arr[i] = arr[j]; arr[j] = t; }
+    return arr;
+  }
+
+  /* ================= STATE ================= */
+  function makeState(){
+    return {
+      stage:"setup", tournamentName:"", increment:500, batchSize:8,
+      teams:[], players:[], totalBatches:1, currentBatch:1,
+      currentPlayerId:null, currentBid:null, activeTab:"pending", sound:true
+    };
+  }
+  function makeDraft(){
+    return { tournamentName:"", increment:500, numTeams:4, defaultPurse:10000, batchSize:8, shuffle:true, teams:[], players:[] };
+  }
+  let state = makeState();
+  let draft = makeDraft();
+  let spinning = false;   // wheel is turning
+  let going = 0;          // 0,1,2 = going once / twice progress for the current bid
+  let wheelRot = 0;       // current wheel rotation in radians
 
   function saveState(){
-    try{
-      var toSave = Object.assign({}, state, { draftPlayers: state.stage === "setup" ? draftPlayers : undefined });
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
-    }catch(e){ /* storage unavailable — continue without persistence */ }
+    try{ window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ state:state, draft:draft })); }catch(e){}
   }
-
   function loadState(){
     try{
-      var raw = window.localStorage.getItem(STORAGE_KEY);
+      const raw = window.localStorage.getItem(STORAGE_KEY);
       if(!raw) return;
-      var parsed = JSON.parse(raw);
-      if(parsed && typeof parsed === "object"){
-        Object.assign(state, parsed);
-        if(Array.isArray(parsed.draftPlayers)) draftPlayers = parsed.draftPlayers;
-      }
-    }catch(e){ /* corrupt or unavailable — start fresh */ }
+      const parsed = JSON.parse(raw);
+      if(parsed && parsed.state) Object.assign(state, parsed.state);
+      if(parsed && parsed.draft) Object.assign(draft, parsed.draft);
+    }catch(e){}
   }
 
-  function fmt(n){
-    n = Number(n) || 0;
-    return "₹" + n.toLocaleString("en-IN");
+  const getPlayer = (id) => state.players.find((p) => p.id === id);
+  const getTeam = (id) => state.teams.find((t) => t.id === id);
+  const wheelPlayers = () => state.players.filter((p) => p.status === "pending" && p.batch === state.currentBatch);
+  const pendingAll = () => state.players.filter((p) => p.status === "pending");
+
+  /* ================= SOUND ================= */
+  let audioCtx = null;
+  function ac(){
+    if(!state.sound) return null;
+    try{
+      if(!audioCtx){ const C = window.AudioContext || window.webkitAudioContext; if(!C) return null; audioCtx = new C(); }
+      if(audioCtx.state === "suspended") audioCtx.resume();
+      return audioCtx;
+    }catch(e){ return null; }
   }
+  function beep(freq, dur, type, vol, delay){
+    const c = ac(); if(!c) return;
+    try{
+      const o = c.createOscillator(), g = c.createGain(), t = c.currentTime + (delay || 0);
+      o.type = type || "sine"; o.frequency.setValueAtTime(freq, t);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(vol || 0.08, t + 0.012);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + dur + 0.03);
+    }catch(e){}
+  }
+  const sfx = {
+    tick(){ beep(1100, 0.03, "square", 0.02); },
+    thud(){ beep(140, 0.12, "sine", 0.16); beep(90, 0.16, "sine", 0.12, 0.02); },
+    bid(){ beep(660, 0.09, "triangle", 0.08); },
+    land(){ beep(523, 0.15, "triangle", 0.09); beep(784, 0.22, "triangle", 0.09, 0.1); },
+    fanfare(){ [523,659,784,1047,1319].forEach((f, i) => beep(f, 0.28, "triangle", 0.09, i * 0.09)); beep(1047, 0.6, "sine", 0.06, 0.5); },
+    sad(){ beep(330, 0.2, "sawtooth", 0.05); beep(247, 0.35, "sawtooth", 0.05, 0.18); }
+  };
 
-  // ---------------- SETUP SCREEN ----------------
-
-  var numTeamsInput = document.getElementById("num-teams");
-  var defaultPurseInput = document.getElementById("default-purse");
-  var teamSlotsWrap = document.getElementById("team-slots");
-  var setupTeamData = [];   // {name, purse} staged before auction starts
-
-  function renderTeamSlots(){
-    var n = Math.max(2, Math.min(12, parseInt(numTeamsInput.value,10) || 2));
-    numTeamsInput.value = n;
-    var defPurse = parseInt(defaultPurseInput.value,10) || 0;
-
-    while(setupTeamData.length < n){
-      setupTeamData.push({ name: "Team " + (setupTeamData.length+1), purse: defPurse });
+  /* ================= CONFETTI ================= */
+  const cf = $("confetti"), cfx = cf.getContext("2d");
+  let parts = [], cfRunning = false;
+  function sizeCf(){ cf.width = window.innerWidth; cf.height = window.innerHeight; }
+  window.addEventListener("resize", sizeCf); sizeCf();
+  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  function burst(x, y, count, colors, spread){
+    if(reduceMotion) return;
+    for(let i = 0; i < count; i++){
+      const a = -Math.PI / 2 + (Math.random() - 0.5) * spread, s = 6 + Math.random() * 10;
+      parts.push({ x:x, y:y, vx:Math.cos(a) * s, vy:Math.sin(a) * s, g:0.28, drag:0.99,
+        size:6 + Math.random() * 8, color:pick(colors), rot:Math.random() * TAU, vr:(Math.random() - 0.5) * 0.4,
+        shape:Math.random() < 0.55 ? "rect" : "dot", life:0, ttl:110 + Math.random() * 80 });
     }
-    setupTeamData.length = n;
+    startCf();
+  }
+  function rain(count, colors){
+    if(reduceMotion) return;
+    for(let i = 0; i < count; i++){
+      parts.push({ x:Math.random() * cf.width, y:-20 - Math.random() * cf.height * 0.5, vx:(Math.random() - 0.5) * 2, vy:2 + Math.random() * 3,
+        g:0.04, drag:0.995, size:6 + Math.random() * 8, color:pick(colors), rot:Math.random() * TAU, vr:(Math.random() - 0.5) * 0.3,
+        shape:Math.random() < 0.6 ? "rect" : "dot", life:0, ttl:260 + Math.random() * 120 });
+    }
+    startCf();
+  }
+  function startCf(){ if(!cfRunning){ cfRunning = true; requestAnimationFrame(loopCf); } }
+  function loopCf(){
+    cfx.clearRect(0, 0, cf.width, cf.height);
+    parts = parts.filter((p) => p.life < p.ttl && p.y < cf.height + 40);
+    parts.forEach((p) => {
+      p.vy += p.g; p.vx *= p.drag; p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.life++;
+      const a = p.life > p.ttl * 0.75 ? 1 - (p.life - p.ttl * 0.75) / (p.ttl * 0.25) : 1;
+      cfx.save(); cfx.globalAlpha = Math.max(0, a); cfx.translate(p.x, p.y); cfx.rotate(p.rot); cfx.fillStyle = p.color;
+      if(p.shape === "rect"){ cfx.fillRect(-p.size / 2, -p.size / 3, p.size, p.size * 0.6); }
+      else { cfx.beginPath(); cfx.arc(0, 0, p.size / 2.4, 0, TAU); cfx.fill(); }
+      cfx.restore();
+    });
+    if(parts.length){ requestAnimationFrame(loopCf); } else { cfRunning = false; cfx.clearRect(0, 0, cf.width, cf.height); }
+  }
+  const GOLDS = ["#F2D26B", "#D4AF37", "#F6F1E3", "#FBE9A5"];
+  function celebrateSale(team){
+    const r = $("auction-block").getBoundingClientRect();
+    const colors = [team.color].concat(GOLDS);
+    burst(r.left + r.width * 0.25, r.top + r.height * 0.6, 60, colors, 1.5);
+    burst(r.left + r.width * 0.75, r.top + r.height * 0.6, 60, colors, 1.5);
+    burst(r.left + r.width * 0.5, r.top + r.height * 0.5, 50, colors, 2.4);
+    sfx.fanfare();
+  }
 
-    teamSlotsWrap.innerHTML = "";
-    setupTeamData.forEach(function(t, i){
-      var row = document.createElement("div");
+  /* ================= TOAST ================= */
+  let toastTimer = null;
+  function toast(msg){
+    const el = $("toast"); el.textContent = msg; el.classList.add("show");
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => el.classList.remove("show"), 2600);
+  }
+
+  /* ================= SETUP SCREEN ================= */
+  function renderTeamSlots(){
+    const n = clamp(parseInt(draft.numTeams, 10) || 2, 2, 12);
+    draft.numTeams = n;
+    while(draft.teams.length < n){ draft.teams.push({ name:"Team " + (draft.teams.length + 1), purse:draft.defaultPurse }); }
+    draft.teams.length = n;
+    const wrap = $("team-slots"); wrap.innerHTML = "";
+    draft.teams.forEach((t, i) => {
+      const row = document.createElement("div");
       row.className = "team-slot";
-      row.innerHTML =
-        '<span class="num">'+(i+1)+'</span>' +
-        '<input type="text" data-idx="'+i+'" class="team-name-input" value="'+escapeHtml(t.name)+'" placeholder="Team name">' +
-        '<input type="number" data-idx="'+i+'" class="purse team-purse-input" value="'+t.purse+'" min="0">';
-      teamSlotsWrap.appendChild(row);
+      row.innerHTML = '<span class="num" style="--tc:' + TEAM_COLORS[i % TEAM_COLORS.length] + '">' + (i + 1) + '</span>' +
+        '<input type="text" class="tn" data-i="' + i + '" value="' + esc(t.name) + '" placeholder="Team name" aria-label="Team ' + (i + 1) + ' name">' +
+        '<input type="number" class="purse tp" data-i="' + i + '" value="' + t.purse + '" min="0" aria-label="Team ' + (i + 1) + ' purse">';
+      wrap.appendChild(row);
     });
-
-    teamSlotsWrap.querySelectorAll(".team-name-input").forEach(function(el){
-      el.addEventListener("input", function(){ setupTeamData[+el.dataset.idx].name = el.value; });
-    });
-    teamSlotsWrap.querySelectorAll(".team-purse-input").forEach(function(el){
-      el.addEventListener("input", function(){ setupTeamData[+el.dataset.idx].purse = parseInt(el.value,10) || 0; });
-    });
+    wrap.querySelectorAll(".tn").forEach((el) => el.addEventListener("input", () => { draft.teams[+el.dataset.i].name = el.value; saveState(); }));
+    wrap.querySelectorAll(".tp").forEach((el) => el.addEventListener("input", () => { draft.teams[+el.dataset.i].purse = parseInt(el.value, 10) || 0; saveState(); }));
   }
 
-  function escapeHtml(s){
-    return String(s).replace(/[&<>"']/g, function(c){
-      return ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c];
-    });
+  function renderBatchPlan(){
+    const n = draft.players.length, size = Math.max(1, parseInt(draft.batchSize, 10) || 1);
+    const el = $("batch-plan");
+    if(!n){ el.textContent = "Add players to see your batch plan."; return; }
+    const b = Math.ceil(n / size), last = n - (b - 1) * size;
+    if(b === 1){ el.textContent = n + " player" + (n === 1 ? "" : "s") + " in a single batch."; return; }
+    if(b <= 6){
+      const sizes = []; for(let i = 0; i < b - 1; i++) sizes.push(size); sizes.push(last);
+      el.textContent = b + " batches: " + sizes.slice(0, -1).join(", ") + " and " + sizes[sizes.length - 1] + " players.";
+    } else {
+      el.textContent = b + " batches of up to " + size + " players.";
+    }
   }
-
-  numTeamsInput.addEventListener("input", renderTeamSlots);
-  defaultPurseInput.addEventListener("change", function(){
-    // only re-fill purse for slots the user hasn't manually edited yet is hard to track simply;
-    // keep it simple: just refresh newly-added slots, don't overwrite edited ones.
-  });
-
-  // -- player pool (setup) --
-  var pNameInput = document.getElementById("p-name");
-  var pCategoryInput = document.getElementById("p-category");
-  var pPriceInput = document.getElementById("p-price");
-  var playerMiniList = document.getElementById("player-mini-list");
-  var playerCountHint = document.getElementById("player-count-hint");
 
   function renderDraftPlayers(){
-    playerMiniList.innerHTML = "";
-    if(draftPlayers.length === 0){
-      playerCountHint.textContent = "No players added yet.";
-      return;
-    }
-    playerCountHint.textContent = draftPlayers.length + " player" + (draftPlayers.length===1?"":"s") + " in the pool.";
-    draftPlayers.forEach(function(p, i){
-      var row = document.createElement("div");
+    const list = $("player-mini-list"); list.innerHTML = "";
+    $("player-count-hint").textContent = draft.players.length
+      ? draft.players.length + " player" + (draft.players.length === 1 ? "" : "s") + " in the pool."
+      : "No players added yet.";
+    draft.players.forEach((p, i) => {
+      const row = document.createElement("div");
       row.className = "player-mini";
-      row.innerHTML =
-        '<span>'+escapeHtml(p.name)+' <span class="meta">— '+escapeHtml(p.category)+' · base '+fmt(p.basePrice)+'</span></span>' +
-        '<button class="remove-x" data-i="'+i+'" title="Remove">✕</button>';
-      playerMiniList.appendChild(row);
+      row.innerHTML = '<span>' + esc(p.name) + ' <span class="meta">— ' + esc(p.category) + ', base ' + fmt(p.basePrice) + '</span></span>' +
+        '<button class="remove-x" data-i="' + i + '" title="Remove ' + esc(p.name) + '" aria-label="Remove ' + esc(p.name) + '">✕</button>';
+      list.appendChild(row);
     });
-    playerMiniList.querySelectorAll(".remove-x").forEach(function(btn){
-      btn.addEventListener("click", function(){
-        draftPlayers.splice(+btn.dataset.i, 1);
-        renderDraftPlayers();
-        saveState();
-      });
-    });
+    list.querySelectorAll(".remove-x").forEach((b) => b.addEventListener("click", () => {
+      draft.players.splice(+b.dataset.i, 1); renderDraftPlayers(); saveState();
+    }));
+    renderBatchPlan();
   }
 
-  document.getElementById("add-player-btn").addEventListener("click", function(){
-    var name = pNameInput.value.trim();
-    if(!name){ pNameInput.focus(); return; }
-    draftPlayers.push({
-      id: uid("p"),
-      name: name,
-      category: pCategoryInput.value,
-      basePrice: parseInt(pPriceInput.value,10) || 0,
-      status: "pending"
+  function initSetupInputs(){
+    $("tournament-name").value = draft.tournamentName || "";
+    $("bid-increment").value = draft.increment;
+    $("num-teams").value = draft.numTeams;
+    $("default-purse").value = draft.defaultPurse;
+    $("batch-size").value = draft.batchSize;
+    $("shuffle-check").checked = !!draft.shuffle;
+    $("tournament-name").addEventListener("input", (e) => { draft.tournamentName = e.target.value; saveState(); });
+    $("bid-increment").addEventListener("input", (e) => { draft.increment = parseInt(e.target.value, 10) || 1; saveState(); });
+    $("num-teams").addEventListener("input", (e) => { draft.numTeams = parseInt(e.target.value, 10) || 2; renderTeamSlots(); saveState(); });
+    $("default-purse").addEventListener("change", (e) => {
+      const np = parseInt(e.target.value, 10) || 0, old = draft.defaultPurse;
+      draft.teams.forEach((t) => { if(t.purse === old) t.purse = np; });
+      draft.defaultPurse = np; renderTeamSlots(); saveState();
     });
-    pNameInput.value = "";
-    pNameInput.focus();
-    renderDraftPlayers();
-    saveState();
-  });
+    $("batch-size").addEventListener("input", (e) => { draft.batchSize = parseInt(e.target.value, 10) || 1; renderBatchPlan(); saveState(); });
+    $("shuffle-check").addEventListener("change", (e) => { draft.shuffle = e.target.checked; saveState(); });
+  }
 
-  pNameInput.addEventListener("keydown", function(e){
-    if(e.key === "Enter"){ e.preventDefault(); document.getElementById("add-player-btn").click(); }
+  $("add-player-btn").addEventListener("click", () => {
+    const name = $("p-name").value.trim();
+    if(!name){ $("p-name").focus(); return; }
+    draft.players.push({ id:uid("p"), name:name, category:$("p-category").value, basePrice:parseInt($("p-price").value, 10) || 0 });
+    $("p-name").value = ""; $("p-name").focus();
+    renderDraftPlayers(); saveState();
   });
+  $("p-name").addEventListener("keydown", (e) => { if(e.key === "Enter"){ e.preventDefault(); $("add-player-btn").click(); } });
 
-  document.getElementById("bulk-import-btn").addEventListener("click", function(){
-    var text = document.getElementById("bulk-text").value;
-    var lines = text.split("\n").map(function(l){ return l.trim(); }).filter(Boolean);
-    var added = 0;
-    lines.forEach(function(line){
-      var parts = line.split(",").map(function(s){ return s.trim(); });
+  $("bulk-import-btn").addEventListener("click", () => {
+    const lines = $("bulk-text").value.split("\n").map((l) => l.trim()).filter(Boolean);
+    lines.forEach((line) => {
+      const parts = line.split(",").map((s) => s.trim());
       if(!parts[0]) return;
-      draftPlayers.push({
-        id: uid("p"),
-        name: parts[0],
-        category: parts[1] || "Open / Other",
-        basePrice: parseInt(parts[2],10) || 0,
-        status: "pending"
-      });
-      added++;
+      draft.players.push({ id:uid("p"), name:parts[0], category:parts[1] || "Open / Other", basePrice:parseInt(parts[2], 10) || 0 });
     });
-    document.getElementById("bulk-text").value = "";
-    renderDraftPlayers();
-    saveState();
+    $("bulk-text").value = ""; renderDraftPlayers(); saveState();
   });
 
-  document.getElementById("start-auction-btn").addEventListener("click", function(){
-    var errEl = document.getElementById("setup-error");
-    errEl.textContent = "";
+  $("start-auction-btn").addEventListener("click", () => {
+    const err = $("setup-error"); err.textContent = "";
+    const teams = draft.teams.filter((t) => t.name.trim());
+    if(teams.length < 2){ err.textContent = "Add at least 2 teams with names."; return; }
+    if(teams.some((t) => !t.purse || t.purse <= 0)){ err.textContent = "Every team needs a purse greater than 0."; return; }
+    if(!draft.players.length){ err.textContent = "Add at least one player to the pool."; return; }
 
-    var validTeams = setupTeamData.filter(function(t){ return t.name.trim().length > 0; });
-    if(validTeams.length < 2){ errEl.textContent = "Add at least 2 teams with names."; return; }
-    if(validTeams.some(function(t){ return !t.purse || t.purse <= 0; })){ errEl.textContent = "Every team needs a purse greater than 0."; return; }
-    if(draftPlayers.length === 0){ errEl.textContent = "Add at least one player to the pool."; return; }
+    const size = Math.max(1, parseInt(draft.batchSize, 10) || 1);
+    const list = draft.players.slice(); if(draft.shuffle) shuffle(list);
 
-    state.tournamentName = document.getElementById("tournament-name").value.trim();
-    state.increment = parseInt(document.getElementById("bid-increment").value,10) || 1;
-    state.teams = validTeams.map(function(t){
-      return { id: uid("t"), name: t.name.trim(), purse: t.purse, spent:0, players: [] };
-    });
-    state.players = draftPlayers.map(function(p){
-      return { id:p.id, name:p.name, category:p.category, basePrice:p.basePrice, status:"pending", soldTeamId:null, soldPrice:null };
-    });
-    state.currentPlayerId = firstPendingId();
-    state.currentBid = null;
-    state.stage = "auction";
-    saveState();
-    render();
+    state.tournamentName = draft.tournamentName.trim();
+    state.increment = Math.max(1, parseInt(draft.increment, 10) || 1);
+    state.batchSize = size;
+    state.teams = teams.map((t, i) => ({ id:uid("t"), name:t.name.trim(), purse:t.purse, spent:0, color:TEAM_COLORS[i % TEAM_COLORS.length], players:[] }));
+    state.players = list.map((p, i) => ({ id:p.id, name:p.name, category:p.category, basePrice:p.basePrice, batch:Math.floor(i / size) + 1, status:"pending", soldTeamId:null, soldPrice:null }));
+    state.totalBatches = Math.ceil(list.length / size);
+    state.currentBatch = 1; state.currentPlayerId = null; state.currentBid = null; state.activeTab = "pending";
+    state.stage = "auction"; going = 0;
+    saveState(); render();
+    window.scrollTo({ top:0, behavior:"smooth" });
   });
 
-  // ---------------- AUCTION SCREEN ----------------
-
-  var stampOverlay = document.getElementById("stamp-overlay");
-  var stampWord = document.getElementById("stamp-word");
-
-  function firstPendingId(){
-    var p = state.players.find(function(pl){ return pl.status === "pending"; });
-    return p ? p.id : null;
+  /* ================= WHEEL ================= */
+  function fitText(ctx, text, maxW){
+    if(ctx.measureText(text).width <= maxW) return text;
+    let t = text;
+    while(t.length > 1 && ctx.measureText(t + "…").width > maxW) t = t.slice(0, -1);
+    return t.trim() + "…";
   }
 
-  function getPlayer(id){ return state.players.find(function(p){ return p.id === id; }); }
-  function getTeam(id){ return state.teams.find(function(t){ return t.id === id; }); }
+  function drawWheel(){
+    const c = $("wheel"), ctx = c.getContext("2d");
+    const S = c.width, cx = S / 2, cy = S / 2, R = S / 2 - 12;
+    ctx.clearRect(0, 0, S, S);
+    const list = wheelPlayers(), n = list.length;
 
+    // gold rim
+    ctx.save();
+    ctx.shadowColor = "rgba(242,210,107,.45)"; ctx.shadowBlur = 36;
+    const rim = ctx.createLinearGradient(0, 0, S, S);
+    rim.addColorStop(0, "#F7DE85"); rim.addColorStop(0.5, "#B48A22"); rim.addColorStop(1, "#F2D26B");
+    ctx.beginPath(); ctx.arc(cx, cy, R, 0, TAU); ctx.fillStyle = rim; ctx.fill();
+    ctx.restore();
+
+    const ringW = 32, Rd = R - ringW, hubR = S * 0.095;
+    ctx.beginPath(); ctx.arc(cx, cy, Rd + 3, 0, TAU); ctx.fillStyle = "#082419"; ctx.fill();
+
+    if(n > 0){
+      const arc = TAU / n;
+      const colorIdx = (i) => { let ci = i % 4; if(n > 1 && i === n - 1 && ci === 0) ci = 2; return ci; };
+      for(let i = 0; i < n; i++){
+        const a0 = wheelRot + i * arc, a1 = a0 + arc;
+        ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, Rd, a0, a1); ctx.closePath();
+        ctx.fillStyle = WHEEL_COLORS[colorIdx(i)].bg; ctx.fill();
+        ctx.strokeStyle = "rgba(8,36,25,.6)"; ctx.lineWidth = 2; ctx.stroke();
+      }
+      const fs = n <= 6 ? 38 : n <= 10 ? 32 : n <= 16 ? 26 : n <= 24 ? 21 : 17;
+      ctx.font = "600 " + fs + "px 'IBM Plex Sans','Segoe UI',Arial,sans-serif";
+      ctx.textAlign = "right"; ctx.textBaseline = "middle";
+      const maxW = Rd - hubR - 50;
+      for(let i = 0; i < n; i++){
+        ctx.save(); ctx.translate(cx, cy); ctx.rotate(wheelRot + i * arc + arc / 2);
+        ctx.fillStyle = WHEEL_COLORS[colorIdx(i)].fg;
+        ctx.fillText(fitText(ctx, list[i].name, maxW), Rd - 26, 1);
+        ctx.restore();
+      }
+    }
+
+    ctx.beginPath(); ctx.arc(cx, cy, Rd, 0, TAU); ctx.strokeStyle = "rgba(242,210,107,.85)"; ctx.lineWidth = 5; ctx.stroke();
+
+    // marquee lights
+    const dots = 32, phase = spinning ? Math.floor(performance.now() / 110) % 2 : 0;
+    for(let i = 0; i < dots; i++){
+      const a = (i / dots) * TAU, x = cx + Math.cos(a) * (R - ringW / 2), y = cy + Math.sin(a) * (R - ringW / 2);
+      ctx.beginPath(); ctx.arc(x, y, 6, 0, TAU);
+      ctx.fillStyle = ((i + phase) % 2 === 0) ? "#FFF6D6" : "#7C5F12"; ctx.fill();
+    }
+
+    // hub
+    const hg = ctx.createRadialGradient(cx - hubR * 0.3, cy - hubR * 0.3, 4, cx, cy, hubR);
+    hg.addColorStop(0, "#FFF1B8"); hg.addColorStop(0.6, "#D4AF37"); hg.addColorStop(1, "#8E6B14");
+    ctx.beginPath(); ctx.arc(cx, cy, hubR, 0, TAU); ctx.fillStyle = hg; ctx.fill();
+    ctx.lineWidth = 7; ctx.strokeStyle = "#082419"; ctx.stroke();
+    ctx.fillStyle = "#0E1A15"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.font = "800 27px Fraunces, Georgia, serif";
+    ctx.fillText(spinning ? "…" : "SPIN", cx, cy + 2);
+  }
+
+  function updateSpinBtn(){
+    const btn = $("spin-btn");
+    if(spinning){ btn.textContent = "Spinning…"; btn.disabled = true; }
+    else if(state.currentPlayerId){ btn.textContent = "A player is on the block"; btn.disabled = true; }
+    else { btn.textContent = "Spin the wheel"; btn.disabled = false; }
+  }
+
+  function spin(){
+    if(spinning || state.currentPlayerId) return;
+    const list = wheelPlayers(); if(!list.length) return;
+    ac();
+    spinning = true; updateSpinBtn();
+    const n = list.length, arc = TAU / n, k = randInt(n);
+    const jitter = (Math.random() - 0.5) * arc * 0.6;
+    const target = -Math.PI / 2 - (k + 0.5) * arc + jitter;
+    const r0 = ((wheelRot % TAU) + TAU) % TAU;
+    const delta = ((((target - r0) % TAU) + TAU) % TAU) + TAU * (5 + randInt(3));
+    const dur = reduceMotion ? 600 : 4800 + randInt(1200);
+    const t0 = performance.now();
+    let lastIdx = -1;
+    wheelRot = r0;
+    function frame(now){
+      const t = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - t, 4);
+      wheelRot = r0 + delta * e;
+      drawWheel();
+      const idx = Math.floor(((((-Math.PI / 2 - wheelRot) % TAU) + TAU) % TAU) / arc) % n;
+      if(idx !== lastIdx){ if(lastIdx !== -1) sfx.tick(); lastIdx = idx; }
+      if(t < 1){ requestAnimationFrame(frame); }
+      else { spinning = false; landed(list[k]); }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function landed(p){
+    state.currentPlayerId = p.id; state.currentBid = null; going = 0;
+    saveState();
+    sfx.land();
+    const r = $("wheel").getBoundingClientRect();
+    burst(r.left + r.width / 2, r.top + 24, 45, GOLDS, 1.3);
+    render({ reveal:true });
+  }
+  $("spin-btn").addEventListener("click", spin);
+
+  /* ================= AUCTION RENDER ================= */
   function nextSuggestedBid(){
-    var cp = getPlayer(state.currentPlayerId);
+    const cp = getPlayer(state.currentPlayerId);
     if(!cp) return 0;
-    if(state.currentBid) return state.currentBid.amount + state.increment;
-    return cp.basePrice;
+    return state.currentBid ? state.currentBid.amount + state.increment : cp.basePrice;
   }
 
-  function renderAuctionCurrent(){
-    var wrap = document.getElementById("auction-current");
-    var cp = getPlayer(state.currentPlayerId);
-    var progressEl = document.getElementById("queue-progress");
-    var pendingCount = state.players.filter(function(p){ return p.status==="pending"; }).length;
-    var soldCount = state.players.filter(function(p){ return p.status==="sold"; }).length;
-    var unsoldCount = state.players.filter(function(p){ return p.status==="unsold"; }).length;
-    progressEl.textContent = soldCount + " sold · " + unsoldCount + " unsold · " + pendingCount + " left" + (state.tournamentName ? "  —  " + state.tournamentName : "");
+  function renderStepper(){
+    const wrap = $("stepper"); let html = "";
+    for(let b = 1; b <= state.totalBatches; b++){
+      const inBatch = state.players.filter((p) => p.batch === b);
+      const done = inBatch.filter((p) => p.status !== "pending").length;
+      const cls = b < state.currentBatch ? "done" : b === state.currentBatch ? "current" : "";
+      const label = b < state.currentBatch ? "Complete" : done + " of " + inBatch.length + " done";
+      html += '<div class="step ' + cls + '"><div class="step-dot">' + (b < state.currentBatch ? "✓" : b) + '</div>' +
+        '<div class="step-text">Batch ' + b + '<small>' + label + '</small></div></div>';
+      if(b < state.totalBatches) html += '<div class="step-line' + (b < state.currentBatch ? " done" : "") + '"></div>';
+    }
+    wrap.innerHTML = html;
+  }
+
+  function renderWheelPanel(){
+    const list = wheelPlayers();
+    const batchDone = list.length === 0 && !state.currentPlayerId;
+    $("wheel-title").textContent = "Batch " + state.currentBatch + " of " + state.totalBatches;
+    $("wheel-sub").textContent = list.length + " player" + (list.length === 1 ? "" : "s") + " on the wheel";
+    $("wheel-stage").hidden = batchDone;
+    $("batch-done").hidden = !batchDone;
+    if(batchDone){
+      const inBatch = state.players.filter((p) => p.batch === state.currentBatch);
+      const sold = inBatch.filter((p) => p.status === "sold");
+      const uns = inBatch.filter((p) => p.status === "unsold").length;
+      const spent = sold.reduce((s, p) => s + p.soldPrice, 0);
+      const last = state.currentBatch >= state.totalBatches;
+      const anyLeft = pendingAll().length > 0;
+      $("batch-done").innerHTML = TROPHY_SVG +
+        '<h3>Batch ' + state.currentBatch + ' complete</h3>' +
+        '<div class="batch-stats"><div><b>' + sold.length + '</b><span>sold</span></div><div><b>' + uns + '</b><span>unsold</span></div><div><b>' + fmt(spent) + '</b><span>spent</span></div></div>' +
+        '<p>' + (last && !anyLeft ? "That's every batch. Head to the results, or re-auction anyone left unsold." : "Ready when you are. Start the next batch to load a fresh wheel.") + '</p>' +
+        (last && !anyLeft
+          ? '<button class="btn btn-gold btn-lg" id="batch-next-btn">See the results</button>'
+          : '<button class="btn btn-gold btn-lg" id="batch-next-btn">Start Batch ' + (state.currentBatch + 1) + '</button>');
+      $("batch-next-btn").addEventListener("click", () => {
+        if(last && !anyLeft){ finishAuction(true); return; }
+        state.currentBatch++; going = 0; saveState(); render();
+        toast("Batch " + state.currentBatch + " is on the wheel");
+      });
+    } else {
+      updateSpinBtn();
+      drawWheel();
+    }
+  }
+
+  function renderBlock(opts){
+    opts = opts || {};
+    const wrap = $("auction-current");
+    const cp = getPlayer(state.currentPlayerId);
+    const sold = state.players.filter((p) => p.status === "sold").length;
+    const uns = state.players.filter((p) => p.status === "unsold").length;
+    $("queue-progress").textContent = sold + " sold, " + uns + " unsold, " + pendingAll().length + " still to go" + (state.tournamentName ? " — " + state.tournamentName : "");
 
     if(!cp){
-      wrap.innerHTML = '<div class="no-player">No player under the hammer. Pick one from the Pending list, or finish the auction.</div>';
+      const left = wheelPlayers().length;
+      wrap.innerHTML = '<div class="no-player">' + MARK_SVG +
+        '<h3>' + (left ? "Who's next?" : "Batch complete") + '</h3>' +
+        '<p>' + (left ? "Spin the wheel to bring the next player under the hammer." : "Start the next batch, or finish the auction.") + '</p></div>';
       return;
     }
 
-    var suggested = nextSuggestedBid();
-    var leaderName = state.currentBid ? getTeam(state.currentBid.teamId).name : null;
+    const suggested = nextSuggestedBid();
+    const leader = state.currentBid ? getTeam(state.currentBid.teamId) : null;
+    const initials = cp.name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
+    const gavelLabels = ["Going once…", "Going twice…", "SOLD!"];
 
-    var teamButtons = state.teams.map(function(t){
-      var isLeading = state.currentBid && state.currentBid.teamId === t.id;
-      var affordable = t.purse >= suggested;
-      var disabled = isLeading || !affordable;
-      return '<button class="team-bid-btn'+(isLeading?' leading':'')+'" data-team="'+t.id+'" '+(disabled?'disabled':'')+'>' +
-        '<div class="t-name">'+escapeHtml(t.name)+(isLeading?' <span class="leading-tag">Leading</span>':'')+'</div>' +
-        '<div class="t-purse">'+fmt(t.purse)+' left</div>' +
-        (affordable ? '<div class="t-bid">Bid '+fmt(suggested)+'</div>' : '<div class="t-bid" style="color:#E4A08F;">Can\'t afford</div>') +
+    const teamBtns = state.teams.map((t) => {
+      const leading = leader && leader.id === t.id;
+      const afford = t.purse >= suggested;
+      return '<button class="team-bid-btn' + (leading ? " leading" : "") + '" style="--tc:' + t.color + '" data-team="' + t.id + '"' + ((leading || !afford) ? " disabled" : "") + '>' +
+        '<div class="t-name">' + esc(t.name) + (leading ? ' <span class="leading-tag">Leading</span>' : "") + '</div>' +
+        '<div class="t-purse">' + fmt(t.purse) + ' left</div>' +
+        (afford ? '<div class="t-bid">Bid ' + fmt(suggested) + '</div>' : '<div class="t-bid" style="color:#F0A895;">Can\'t afford</div>') +
         '</button>';
     }).join("");
 
+    wrap.className = opts.reveal ? "reveal" : "";
     wrap.innerHTML =
-      '<span class="chip player-category">'+escapeHtml(cp.category)+'</span>' +
-      '<h2 class="player-name">'+escapeHtml(cp.name)+'</h2>' +
-      '<div class="player-base">Base price '+fmt(cp.basePrice)+'</div>' +
+      '<div class="block-tags"><span class="chip gold">Batch ' + cp.batch + '</span><span class="chip">' + esc(cp.category) + '</span></div>' +
+      '<div class="spotlight"><div class="medallion">' + esc(initials) + '</div><div><h2 class="player-name">' + esc(cp.name) + '</h2><div class="player-base">Base price ' + fmt(cp.basePrice) + '</div></div></div>' +
       '<div class="bid-status">' +
         '<div class="label">CURRENT BID</div>' +
-        '<div class="amount">'+ (state.currentBid ? fmt(state.currentBid.amount) : "—") +'</div>' +
-        '<div class="leader">'+ (leaderName ? "Leading: " + escapeHtml(leaderName) : "No bids yet") +'</div>' +
+        '<div class="amount' + (opts.bump ? " bump" : "") + '">' + (state.currentBid ? fmt(state.currentBid.amount) : "No bids yet") + '</div>' +
+        '<div class="leader">' + (leader ? '<span class="dot" style="--tc:' + leader.color + '"></span>Leading: ' + esc(leader.name) : "Tap a team below to open the bidding at " + fmt(cp.basePrice)) + '</div>' +
+        (going > 0 ? '<div class="going">' + gavelLabels[going - 1] + '</div>' : "") +
       '</div>' +
-      '<div class="next-bid-row">' +
-        '<label for="next-bid-input">Next bid amount</label>' +
-        '<input type="number" id="next-bid-input" value="'+suggested+'" min="0">' +
-        '<button class="btn btn-sm" id="reset-suggested-btn">Use suggested</button>' +
-      '</div>' +
-      '<div class="team-bid-grid">'+teamButtons+'</div>' +
+      '<div class="next-bid-row"><label for="next-bid-input">Next bid amount</label>' +
+        '<input type="number" id="next-bid-input" value="' + suggested + '" min="0">' +
+        '<button class="btn btn-sm" id="reset-suggested-btn">Use suggested</button></div>' +
+      '<div class="team-bid-grid">' + teamBtns + '</div>' +
       '<div class="auction-actions">' +
-        '<button class="btn btn-gold" id="mark-sold-btn" '+(state.currentBid?'':'disabled')+'>Mark SOLD</button>' +
-        '<button class="btn btn-red" id="mark-unsold-btn">Mark UNSOLD</button>' +
+        '<button class="btn btn-gold btn-lg" id="gavel-btn"' + (state.currentBid ? "" : " disabled") + '>' + gavelLabels[going] + '</button>' +
+        '<button class="btn btn-sm" id="sell-now-btn"' + (state.currentBid ? "" : " disabled") + '>Sell now</button>' +
+        '<button class="btn btn-red btn-sm" id="unsold-btn">Mark unsold</button>' +
+        '<button class="btn btn-ghost btn-sm" id="putback-btn">Put back on wheel</button>' +
       '</div>';
 
-    document.getElementById("next-bid-input").addEventListener("change", function(){});
-    document.getElementById("reset-suggested-btn").addEventListener("click", function(){
-      document.getElementById("next-bid-input").value = nextSuggestedBid();
-    });
+    $("reset-suggested-btn").addEventListener("click", () => { $("next-bid-input").value = nextSuggestedBid(); });
 
-    wrap.querySelectorAll(".team-bid-btn").forEach(function(btn){
-      btn.addEventListener("click", function(){
-        var teamId = btn.dataset.team;
-        var amountInput = document.getElementById("next-bid-input");
-        var amount = parseInt(amountInput.value,10) || suggested;
-        var team = getTeam(teamId);
-        if(amount > team.purse) { return; }
-        if(state.currentBid && amount <= state.currentBid.amount) { return; }
-        state.currentBid = { amount: amount, teamId: teamId };
-        saveState();
-        renderAuctionCurrent();
-      });
-    });
+    wrap.querySelectorAll(".team-bid-btn").forEach((btn) => btn.addEventListener("click", () => {
+      const team = getTeam(btn.dataset.team);
+      const amount = parseInt($("next-bid-input").value, 10) || suggested;
+      if(state.currentBid && amount <= state.currentBid.amount){ toast("Bid must be higher than " + fmt(state.currentBid.amount)); return; }
+      if(!state.currentBid && amount < cp.basePrice){ toast("Opening bid can't be below the base price of " + fmt(cp.basePrice)); return; }
+      if(amount > team.purse){ toast(team.name + " only has " + fmt(team.purse) + " left"); return; }
+      state.currentBid = { amount:amount, teamId:team.id }; going = 0;
+      sfx.bid(); saveState(); renderBlock({ bump:true });
+    }));
 
-    document.getElementById("mark-sold-btn").addEventListener("click", function(){
+    $("gavel-btn").addEventListener("click", () => {
       if(!state.currentBid) return;
-      finalizeSale(cp.id, state.currentBid.teamId, state.currentBid.amount);
+      if(going < 2){ going++; sfx.thud(); renderBlock(); }
+      else finalizeSale(cp.id, state.currentBid.teamId, state.currentBid.amount);
     });
-    document.getElementById("mark-unsold-btn").addEventListener("click", function(){
-      finalizeUnsold(cp.id);
+    $("sell-now-btn").addEventListener("click", () => {
+      if(state.currentBid) finalizeSale(cp.id, state.currentBid.teamId, state.currentBid.amount);
+    });
+    $("unsold-btn").addEventListener("click", () => finalizeUnsold(cp.id));
+    $("putback-btn").addEventListener("click", () => {
+      state.currentPlayerId = null; state.currentBid = null; going = 0; saveState(); render();
     });
   }
 
-  function showStamp(word, cls){
-    stampWord.textContent = word;
-    stampWord.className = "stamp-word " + cls;
-    stampOverlay.classList.add("show");
-    window.setTimeout(function(){
-      stampOverlay.classList.remove("show");
-    }, 900);
+  function showStamp(word, cls, subHtml, ms){
+    const o = $("stamp-overlay"), w = $("stamp-word");
+    w.textContent = word; w.className = "stamp-word " + cls; $("stamp-sub").innerHTML = subHtml || "";
+    o.classList.remove("show"); void o.offsetWidth; o.classList.add("show");
+    setTimeout(() => o.classList.remove("show"), ms);
+  }
+  function countUp(el, to, ms){
+    if(reduceMotion){ el.textContent = fmt(to); return; }
+    const t0 = performance.now();
+    (function step(now){
+      const t = Math.min(1, (now - t0) / ms);
+      el.textContent = fmt(Math.round(to * (1 - Math.pow(1 - t, 3))));
+      if(t < 1) requestAnimationFrame(step);
+    })(t0);
+  }
+
+  function afterResolve(){
+    // If that was the last player of the batch, throw a bigger party a moment later.
+    if(wheelPlayers().length === 0){
+      setTimeout(() => {
+        if(state.stage === "auction" && wheelPlayers().length === 0){ rain(140, GOLDS.concat(state.teams.map((t) => t.color))); }
+      }, 2200);
+    }
   }
 
   function finalizeSale(playerId, teamId, amount){
-    var p = getPlayer(playerId);
-    var t = getTeam(teamId);
-    p.status = "sold";
-    p.soldTeamId = teamId;
-    p.soldPrice = amount;
-    t.purse -= amount;
-    t.spent += amount;
-    t.players.push({ id: p.id, name: p.name, category: p.category, price: amount });
-    showStamp("SOLD", "sold");
-    state.currentBid = null;
-    state.currentPlayerId = firstPendingId();
-    saveState();
-    render();
+    const p = getPlayer(playerId), t = getTeam(teamId);
+    p.status = "sold"; p.soldTeamId = teamId; p.soldPrice = amount;
+    t.purse -= amount; t.spent += amount;
+    t.players.push({ id:p.id, name:p.name, category:p.category, price:amount });
+    state.currentPlayerId = null; state.currentBid = null; going = 0;
+    saveState(); render();
+    showStamp("SOLD", "sold", 'to <b>' + esc(t.name) + '</b> for <b id="stamp-amt">' + fmt(0) + '</b>', 2300);
+    countUp($("stamp-amt"), amount, 900);
+    celebrateSale(t);
+    afterResolve();
   }
 
   function finalizeUnsold(playerId){
-    var p = getPlayer(playerId);
+    const p = getPlayer(playerId);
     p.status = "unsold";
-    showStamp("UNSOLD", "unsold");
-    state.currentBid = null;
-    state.currentPlayerId = firstPendingId();
-    saveState();
-    render();
+    state.currentPlayerId = null; state.currentBid = null; going = 0;
+    saveState(); render();
+    showStamp("UNSOLD", "unsold", esc(p.name) + " goes back to the pool", 1500);
+    sfx.sad();
+    afterResolve();
   }
 
-  function renderTeamsOverview(){
-    var wrap = document.getElementById("teams-overview");
-    wrap.innerHTML = "";
-    state.teams.forEach(function(t){
-      var totalPurse = t.purse + t.spent;
-      var pct = totalPurse > 0 ? Math.max(0, Math.min(100, (t.purse/totalPurse)*100)) : 0;
-      var card = document.createElement("div");
-      card.className = "team-card";
-      card.innerHTML =
-        '<div class="row1"><span class="t-name">'+escapeHtml(t.name)+'</span><span class="t-count">'+t.players.length+' player'+(t.players.length===1?'':'s')+'</span></div>' +
-        '<div class="purse-bar"><div style="width:'+pct+'%;"></div></div>' +
-        '<div class="purse-figures"><span>'+fmt(t.purse)+' left</span><span>'+fmt(t.spent)+' spent</span></div>';
-      wrap.appendChild(card);
+  function renderTeams(){
+    const wrap = $("teams-overview"); wrap.innerHTML = "";
+    state.teams.forEach((t) => {
+      const total = t.purse + t.spent, pct = total > 0 ? clamp((t.purse / total) * 100, 0, 100) : 0;
+      const el = document.createElement("div");
+      el.className = "team-card"; el.style.setProperty("--tc", t.color);
+      el.innerHTML = '<div class="row1"><span class="t-name">' + esc(t.name) + '</span><span class="t-count">' + t.players.length + ' player' + (t.players.length === 1 ? "" : "s") + '</span></div>' +
+        '<div class="purse-bar"><div style="width:' + pct + '%;"></div></div>' +
+        '<div class="purse-figures"><span>' + fmt(t.purse) + ' left</span><span>' + fmt(t.spent) + ' spent</span></div>';
+      wrap.appendChild(el);
     });
   }
 
-  function renderQueueList(){
-    var wrap = document.getElementById("queue-list");
-    wrap.innerHTML = "";
-    var list = state.players.filter(function(p){ return p.status === state.activeTab; });
-
-    if(list.length === 0){
-      wrap.innerHTML = '<div class="queue-empty">Nothing here yet.</div>';
-      return;
-    }
-
-    list.forEach(function(p){
-      var row = document.createElement("div");
-      row.className = "queue-item";
-      if(state.activeTab === "pending"){
-        row.innerHTML = '<span>'+escapeHtml(p.name)+' <span class="meta" style="opacity:.6;">· '+fmt(p.basePrice)+'</span></span>' +
-          '<button class="btn btn-sm" data-select="'+p.id+'">'+(p.id===state.currentPlayerId?'On block':'Bring up')+'</button>';
-      } else if(state.activeTab === "sold"){
-        var team = getTeam(p.soldTeamId);
-        row.innerHTML = '<span>'+escapeHtml(p.name)+' <span class="meta" style="opacity:.6;">→ '+escapeHtml(team?team.name:"?")+'</span></span>' +
-          '<span class="chip" style="color:var(--gold-bright); border-color:var(--gold);">'+fmt(p.soldPrice)+'</span>';
+  function renderQueue(){
+    const wrap = $("queue-list"); wrap.innerHTML = "";
+    const tab = state.activeTab;
+    const list = state.players.filter((p) => tab === "pending" ? (p.status === "pending" && p.batch === state.currentBatch) : p.status === tab);
+    document.querySelectorAll(".tab-btn").forEach((b) => b.classList.toggle("active", b.dataset.tab === tab));
+    if(!list.length){ wrap.innerHTML = '<div class="queue-empty">Nothing here yet.</div>'; return; }
+    list.forEach((p) => {
+      const row = document.createElement("div"); row.className = "queue-item";
+      if(tab === "pending"){
+        row.innerHTML = '<span>' + esc(p.name) + ' <span class="meta">' + fmt(p.basePrice) + '</span></span>' +
+          '<button class="btn btn-sm" data-select="' + p.id + '"' + (p.id === state.currentPlayerId ? " disabled" : "") + '>' + (p.id === state.currentPlayerId ? "On the block" : "Bring up") + '</button>';
+      } else if(tab === "sold"){
+        const team = getTeam(p.soldTeamId);
+        row.innerHTML = '<span>' + esc(p.name) + ' <span class="meta">to ' + esc(team ? team.name : "?") + ', batch ' + p.batch + '</span></span>' +
+          '<span class="chip gold">' + fmt(p.soldPrice) + '</span>';
       } else {
-        row.innerHTML = '<span>'+escapeHtml(p.name)+'</span>' +
-          '<button class="btn btn-sm" data-requeue="'+p.id+'">Re-auction</button>';
+        row.innerHTML = '<span>' + esc(p.name) + ' <span class="meta">batch ' + p.batch + '</span></span>' +
+          '<button class="btn btn-sm" data-requeue="' + p.id + '">Re-auction</button>';
       }
       wrap.appendChild(row);
     });
-
-    wrap.querySelectorAll("[data-select]").forEach(function(btn){
-      btn.addEventListener("click", function(){
-        state.currentPlayerId = btn.dataset.select;
-        state.currentBid = null;
-        saveState();
-        render();
-      });
-    });
-    wrap.querySelectorAll("[data-requeue]").forEach(function(btn){
-      btn.addEventListener("click", function(){
-        getPlayer(btn.dataset.requeue).status = "pending";
-        if(!state.currentPlayerId) state.currentPlayerId = firstPendingId();
-        saveState();
-        render();
-      });
-    });
+    wrap.querySelectorAll("[data-select]").forEach((b) => b.addEventListener("click", () => {
+      if(spinning) return;
+      state.currentPlayerId = b.dataset.select; state.currentBid = null; going = 0; saveState(); render({ reveal:true });
+    }));
+    wrap.querySelectorAll("[data-requeue]").forEach((b) => b.addEventListener("click", () => {
+      if(spinning) return;
+      const p = getPlayer(b.dataset.requeue); p.status = "pending"; p.batch = state.currentBatch;
+      saveState(); render(); toast(p.name + " is back on the wheel");
+    }));
   }
 
-  document.querySelectorAll(".tab-btn").forEach(function(btn){
-    btn.addEventListener("click", function(){
-      document.querySelectorAll(".tab-btn").forEach(function(b){ b.classList.remove("active"); });
-      btn.classList.add("active");
-      state.activeTab = btn.dataset.tab;
-      saveState();
-      renderQueueList();
-    });
-  });
+  document.querySelectorAll(".tab-btn").forEach((b) => b.addEventListener("click", () => {
+    state.activeTab = b.dataset.tab; saveState(); renderQueue();
+  }));
 
-  document.getElementById("finish-auction-btn").addEventListener("click", function(){
-    state.stage = "results";
-    saveState();
-    render();
-  });
+  function finishAuction(skipConfirm){
+    const left = pendingAll().length;
+    if(left && !skipConfirm && !window.confirm(left + " player" + (left === 1 ? " hasn't" : "s haven't") + " gone under the hammer yet. Finish anyway?")) return;
+    state.stage = "results"; state.currentPlayerId = null; state.currentBid = null;
+    saveState(); render(); window.scrollTo({ top:0, behavior:"smooth" });
+    setTimeout(() => { rain(180, GOLDS.concat(state.teams.map((t) => t.color))); sfx.fanfare(); }, 350);
+  }
+  $("finish-auction-btn").addEventListener("click", () => { if(!spinning) finishAuction(false); });
 
-  // ---------------- RESULTS SCREEN ----------------
+  /* ================= RESULTS ================= */
+  function statCard(num, lbl){ return '<div class="stat-card"><div class="num">' + num + '</div><div class="lbl">' + esc(lbl) + '</div></div>'; }
 
   function renderResults(){
-    document.getElementById("results-title").textContent =
-      (state.tournamentName ? state.tournamentName + " — " : "") + "Auction results";
+    $("results-title").textContent = (state.tournamentName ? state.tournamentName + ": " : "") + "Auction results";
+    const sold = state.players.filter((p) => p.status === "sold");
+    const uns = state.players.filter((p) => p.status !== "sold");
+    const total = sold.reduce((s, p) => s + p.soldPrice, 0);
+    const top = sold.slice().sort((a, b) => b.soldPrice - a.soldPrice)[0];
+    const spender = state.teams.slice().sort((a, b) => b.spent - a.spent)[0];
+    $("results-summary").innerHTML =
+      statCard(sold.length, "Players sold") + statCard(uns.length, "Unsold or not auctioned") + statCard(fmt(total), "Total spent") +
+      (top ? statCard(fmt(top.soldPrice), "Top sale: " + top.name + " to " + (getTeam(top.soldTeamId) || {}).name) : "") +
+      (spender && spender.spent > 0 ? statCard(esc(spender.name), "Biggest spender, " + fmt(spender.spent)) : "");
 
-    var soldPlayers = state.players.filter(function(p){ return p.status === "sold"; });
-    var unsoldPlayers = state.players.filter(function(p){ return p.status === "unsold"; });
-    var totalSpent = soldPlayers.reduce(function(s,p){ return s + p.soldPrice; }, 0);
-    var highest = soldPlayers.slice().sort(function(a,b){ return b.soldPrice - a.soldPrice; })[0];
-
-    var summary = document.getElementById("results-summary");
-    summary.innerHTML =
-      statCard(soldPlayers.length, "Players sold") +
-      statCard(unsoldPlayers.length, "Unsold") +
-      statCard(fmt(totalSpent), "Total spent") +
-      (highest ? statCard(fmt(highest.soldPrice), "Top sale — " + highest.name) : "");
-
-    var grid = document.getElementById("results-grid");
-    grid.innerHTML = "";
-    state.teams.forEach(function(t){
-      var card = document.createElement("div");
-      card.className = "result-team";
-      var rows = t.players.length
-        ? t.players.map(function(p){ return '<li><span>'+escapeHtml(p.name)+' <span style="opacity:.55;">— '+escapeHtml(p.category)+'</span></span><span class="price">'+fmt(p.price)+'</span></li>'; }).join("")
+    const grid = $("results-grid"); grid.innerHTML = "";
+    state.teams.forEach((t) => {
+      const el = document.createElement("div"); el.className = "result-team"; el.style.setProperty("--tc", t.color);
+      const rows = t.players.length
+        ? t.players.map((p) => '<li><span>' + esc(p.name) + ' <span style="opacity:.55;">' + esc(p.category) + '</span></span><span class="price">' + fmt(p.price) + '</span></li>').join("")
         : '<li class="empty">No players won</li>';
-      card.innerHTML =
-        '<h3>'+escapeHtml(t.name)+'</h3>' +
-        '<div class="rt-purse">'+fmt(t.spent)+' spent · '+fmt(t.purse)+' remaining</div>' +
-        '<ul>'+rows+'</ul>';
-      grid.appendChild(card);
+      el.innerHTML = '<h3>' + esc(t.name) + '</h3><div class="rt-purse">' + fmt(t.spent) + ' spent, ' + fmt(t.purse) + ' remaining</div><ul>' + rows + '</ul>';
+      grid.appendChild(el);
     });
+    if(uns.length){
+      const el = document.createElement("div"); el.className = "result-team"; el.style.setProperty("--tc", "#8a938e");
+      el.innerHTML = '<h3>Unsold</h3><div class="rt-purse">' + uns.length + ' player' + (uns.length === 1 ? "" : "s") + ' without a team</div><ul>' +
+        uns.map((p) => '<li><span>' + esc(p.name) + ' <span style="opacity:.55;">' + esc(p.category) + '</span></span><span class="price">' + fmt(p.basePrice) + '</span></li>').join("") + '</ul>';
+      grid.appendChild(el);
+    }
   }
-
-  function statCard(num, lbl){
-    return '<div class="stat-card"><div class="num">'+num+'</div><div class="lbl">'+escapeHtml(lbl)+'</div></div>';
-  }
-
-  document.getElementById("print-btn").addEventListener("click", function(){ window.print(); });
-
-  document.getElementById("new-auction-btn").addEventListener("click", function(){
-    resetAll();
+  $("print-btn").addEventListener("click", () => window.print());
+  $("back-btn").addEventListener("click", () => { state.stage = "auction"; saveState(); render(); });
+  $("new-auction-btn").addEventListener("click", () => {
+    if(window.confirm("Start a new auction? This clears all teams, players and results.")) resetAll();
   });
 
-  document.getElementById("reset-btn").addEventListener("click", function(){
-    if(window.confirm("Reset everything and start a new auction? This clears all teams, players and results.")){
-      resetAll();
-    }
+  /* ================= GLOBAL ================= */
+  $("reset-btn").addEventListener("click", () => {
+    if(window.confirm("Reset everything and start a new auction? This clears all teams, players and results.")) resetAll();
+  });
+  $("sound-btn").addEventListener("click", () => {
+    state.sound = !state.sound; saveState(); render();
+    if(state.sound){ ac(); sfx.bid(); }
   });
 
   function resetAll(){
-    state = { stage:"setup", tournamentName:"", increment:500, teams:[], players:[], currentPlayerId:null, currentBid:null, activeTab:"pending" };
-    draftPlayers = [];
-    setupTeamData = [];
+    const keepSound = state.sound;
+    state = makeState(); state.sound = keepSound;
+    draft = makeDraft(); going = 0; spinning = false; wheelRot = 0; parts = [];
     try{ window.localStorage.removeItem(STORAGE_KEY); }catch(e){}
-    numTeamsInput.value = 4;
-    defaultPurseInput.value = 10000;
-    document.getElementById("bid-increment").value = 500;
-    document.getElementById("tournament-name").value = "";
-    renderTeamSlots();
-    renderDraftPlayers();
-    render();
+    $("tournament-name").value = ""; $("bid-increment").value = draft.increment; $("num-teams").value = draft.numTeams;
+    $("default-purse").value = draft.defaultPurse; $("batch-size").value = draft.batchSize; $("shuffle-check").checked = true;
+    render(); window.scrollTo({ top:0 });
   }
 
-  // ---------------- MASTER RENDER ----------------
-
-  function render(){
-    var stagePill = document.getElementById("stage-pill");
-    document.getElementById("setup-screen").hidden = state.stage !== "setup";
-    document.getElementById("auction-screen").hidden = state.stage !== "auction";
-    document.getElementById("results-screen").hidden = state.stage !== "results";
-
+  function render(opts){
+    $("setup-screen").hidden = state.stage !== "setup";
+    $("auction-screen").hidden = state.stage !== "auction";
+    $("results-screen").hidden = state.stage !== "results";
+    $("sound-btn").textContent = state.sound ? "Sound on" : "Sound off";
+    const pill = $("stage-pill");
     if(state.stage === "setup"){
-      stagePill.textContent = "Setup";
-      renderTeamSlots();
-      renderDraftPlayers();
+      pill.textContent = "Setup"; renderTeamSlots(); renderDraftPlayers();
     } else if(state.stage === "auction"){
-      stagePill.textContent = "Auction live";
-      renderAuctionCurrent();
-      renderTeamsOverview();
-      renderQueueList();
-      var pendingLeft = state.players.filter(function(p){ return p.status==="pending"; }).length;
-      document.getElementById("finish-auction-btn").disabled = pendingLeft > 0;
-    } else if(state.stage === "results"){
-      stagePill.textContent = "Results";
-      renderResults();
+      pill.textContent = "Live: batch " + state.currentBatch + " of " + state.totalBatches;
+      renderStepper(); renderWheelPanel(); renderBlock(opts); renderTeams(); renderQueue();
+    } else {
+      pill.textContent = "Results"; renderResults();
     }
   }
 
-  // ---------------- INIT ----------------
+  /* ================= INIT ================= */
   loadState();
-  numTeamsInput.value = 4;
-  defaultPurseInput.value = 10000;
-  if(state.stage === "setup"){
-    renderTeamSlots();
-  }
+  initSetupInputs();
   render();
-
+  if(document.fonts && document.fonts.ready){ document.fonts.ready.then(() => { if(state.stage === "auction" && !spinning && !$("wheel-stage").hidden) drawWheel(); }); }
 })();
 </script>
 </body>
