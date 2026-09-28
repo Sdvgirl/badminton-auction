@@ -493,6 +493,7 @@
             <div class="field">
               <label for="bid-increment">Bid increment (₹)</label>
               <input type="number" id="bid-increment" value="500" min="1">
+              <p class="hint">Goes up by another ₹1,000 once a bid reaches ₹50,000.</p>
             </div>
           </div>
           <div class="field-row">
@@ -1265,10 +1266,10 @@
   }
   function landed(p){
     state.currentPlayerId = p.id; state.currentBid = null;
+    startTimer(state.timerSecs);            // clock must be running before the block renders, or the team buttons stay locked
     saveState(); sfx.land();
     runFx({ k:"landed" }); bc({ t:"fx", k:"landed" });
     render({ reveal:true });
-    startTimer(state.timerSecs);
   }
   $("spin-btn").addEventListener("click", spin);
 
@@ -1319,7 +1320,9 @@
   }
 
   /* ================= AUCTION RENDER ================= */
-  const nextSuggestedBid = () => { const cp = getPlayer(state.currentPlayerId); return !cp ? 0 : (state.currentBid ? state.currentBid.amount + state.increment : cp.basePrice); };
+  const BIG_BID_AT = 50000, BIG_BID_EXTRA = 1000;   // once a bid reaches ₹50,000 the increment goes up by another ₹1,000
+  const currentIncrement = () => state.increment + (state.currentBid && state.currentBid.amount >= BIG_BID_AT ? BIG_BID_EXTRA : 0);
+  const nextSuggestedBid = () => { const cp = getPlayer(state.currentPlayerId); return !cp ? 0 : (state.currentBid ? state.currentBid.amount + currentIncrement() : cp.basePrice); };
 
   function renderStepper(){
     let html = "";
@@ -1411,7 +1414,7 @@
       if(!state.currentBid && amount < cp.basePrice){ toast("Opening bid can't be below the base price of " + fmt(cp.basePrice)); return; }
       if(amount > team.purse){ toast(team.name + " only has " + fmt(team.purse) + " left"); return; }
       state.currentBid = { amount:amount, teamId:team.id };
-      if(state.extendClock && timeLeft < 10) timeLeft = 10;
+      if(state.extendClock && timeLeft < Math.min(10, state.timerSecs)) timeLeft = Math.min(10, state.timerSecs);
       sfx.bid(); saveState(); renderBlock({ bump:true }); renderTeams(); bcTimer();
     }));
     $("pause-btn").addEventListener("click", () => {
@@ -1494,7 +1497,7 @@
     });
     wrap.querySelectorAll("[data-select]").forEach((b) => b.addEventListener("click", () => {
       if(spinning) return;
-      state.currentPlayerId = b.dataset.select; state.currentBid = null; saveState(); render({ reveal:true }); startTimer(state.timerSecs);
+      state.currentPlayerId = b.dataset.select; state.currentBid = null; startTimer(state.timerSecs); saveState(); render({ reveal:true });
     }));
     wrap.querySelectorAll("[data-requeue]").forEach((b) => b.addEventListener("click", () => {
       if(spinning) return;
@@ -1627,7 +1630,6 @@
   if(state.currentPlayerId){ timeLeft = state.timerSecs; timerRunning = false; }   // came back mid-player: clock waits for the presenter
   if(isMirror){
     document.addEventListener("click", () => ac());
-    bc = bc; // mirrors never send state
     if(channel) channel.postMessage({ t:"hello" });
   }
   render();
