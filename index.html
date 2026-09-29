@@ -382,6 +382,60 @@
   body.mode-audience .purse-figures{ font-size:13.5px; }
   body.mode-audience .step-text{ font-size:15px; }
 
+  /* ---------- EDIT SETTINGS (presenter only, while the auction is paused) ---------- */
+  .btn-outline-gold{ border-color:rgba(212,175,55,.7); color:var(--gold-bright); }
+  .editor{ position:fixed; inset:0; z-index:105; overflow-y:auto; overscroll-behavior:contain;
+    background:radial-gradient(ellipse 80% 40% at 50% -6%, rgba(242,210,107,.16), transparent 60%), var(--court-deep); }
+  .editor-shell{ max-width:1000px; margin:0 auto; padding:0 20px calc(64px + env(safe-area-inset-bottom, 0px)); }
+  .editor-head{ position:sticky; top:0; z-index:3; margin:0 -20px; padding:calc(16px + env(safe-area-inset-top, 0px)) 20px 0; background:var(--court-deep); box-shadow:0 14px 22px -16px rgba(0,0,0,.7); }
+  .editor-titlebar{ display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  .editor-kicker{ display:flex; align-items:center; gap:9px; font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-bright); }
+  .editor-kicker i{ width:8px; height:8px; border-radius:50%; background:var(--gold-bright); box-shadow:0 0 0 4px rgba(242,210,107,.2); animation:goingPulse 1.1s ease-in-out infinite alternate; }
+  .editor-title{ font-family:var(--font-display); font-weight:800; font-size:clamp(26px,4vw,38px); line-height:1.1; margin:4px 0 0; outline:none; }
+  .editor-actions{ display:flex; gap:10px; }
+  .editor-error{ color:#F0A895; font-size:13.5px; padding-top:10px; }
+  .editor-error:empty{ padding:0; }
+  .ed-tabs{ display:flex; gap:4px; border-bottom:1px solid var(--line); margin-top:14px; overflow-x:auto; }
+  .ed-tab{ background:none; border:none; color:var(--cream); opacity:.6; padding:11px 16px; font-size:14px; font-weight:500; border-bottom:2px solid transparent; margin-bottom:-1px; white-space:nowrap; }
+  .ed-tab.active{ opacity:1; font-weight:600; border-bottom-color:var(--gold); }
+  .ed-note{ background:rgba(212,175,55,.08); border:1px solid rgba(212,175,55,.35); border-radius:12px; padding:12px 16px; font-size:13.5px; margin:18px 0; }
+  .ed-card{ background:linear-gradient(180deg, rgba(20,66,51,.74), rgba(9,40,30,.78)); border:1px solid var(--line); border-radius:18px; padding:22px; margin-bottom:18px; }
+  .ed-card h3{ font-family:var(--font-display); font-size:19px; margin:0 0 14px; }
+  .ed-input{ width:100%; min-width:0; background:rgba(6,26,19,.65); border:1px solid var(--line); color:var(--cream); border-radius:10px; padding:9px 11px; font-size:14px; outline:none; }
+  .ed-input:focus{ border-color:var(--gold); }
+  .ed-input:disabled{ opacity:.45; cursor:not-allowed; }
+  .ed-money{ position:relative; display:block; }
+  .ed-money > span{ position:absolute; left:11px; top:50%; transform:translateY(-50%); opacity:.6; font-size:13.5px; pointer-events:none; }
+  .ed-money .ed-input{ padding-left:26px; }
+  .ed-team{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; padding:12px 14px; border:1px solid var(--line); border-left:5px solid var(--tc, var(--gold)); border-radius:14px; background:rgba(246,241,227,.04); margin-bottom:10px; }
+  .ed-team-main{ flex:1 1 200px; min-width:0; }
+  .ed-team-meta{ font-size:12px; opacity:.62; margin-top:5px; }
+  .ed-purse{ flex:0 0 176px; }
+  .ed-purse label{ display:block; font-size:11.5px; opacity:.65; margin-bottom:4px; }
+  .ed-add{ display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; }
+  .ed-add .field{ margin:0; flex:1 1 180px; }
+  .ed-listhead{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin:6px 0 4px; }
+  .ed-batch-h{ display:flex; align-items:baseline; gap:10px; font-family:var(--font-display); font-weight:700; font-size:16px; color:var(--gold-bright); margin:18px 2px 8px; }
+  .ed-batch-h span{ font-family:var(--font-ui); font-weight:500; font-size:12px; color:var(--cream); opacity:.6; }
+  .ed-prow{ display:flex; flex-wrap:wrap; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--line); border-radius:12px; background:rgba(246,241,227,.035); margin-bottom:8px; }
+  .ed-prow.onblock{ border-color:var(--gold); background:rgba(212,175,55,.1); }
+  .ed-prow .f-name{ flex:1 1 180px; width:auto; }
+  .ed-prow .f-cat{ flex:0 1 168px; width:auto; }
+  .ed-prow .f-base{ flex:0 0 112px; }
+  .ed-prow .f-batch{ flex:0 0 132px; width:auto; }
+  .ed-prow .f-act{ margin-left:auto; display:flex; align-items:center; gap:8px; }
+  .remove-x:disabled{ opacity:.25; cursor:not-allowed; }
+  .ed-reshuffle{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:14px; padding-top:14px; border-top:1px dashed rgba(212,175,55,.35); font-size:13px; }
+  .ed-reshuffle .ed-input{ width:76px; }
+  @media (max-width:560px){
+    .editor-shell{ padding-left:14px; padding-right:14px; }
+    .editor-head{ margin:0 -14px; padding-left:14px; padding-right:14px; }
+    .ed-card{ padding:16px; }
+    .ed-purse{ flex:1 1 100%; }
+    .ed-prow .f-cat, .ed-prow .f-batch{ flex:1 1 130px; }
+  }
+  @media (prefers-reduced-motion: reduce){ .editor-kicker i{ animation:none; } }
+
   @media (max-width:560px){
     .auction-block{ padding:22px 18px; }
     .spotlight{ gap:16px; }
@@ -391,7 +445,7 @@
   }
   @media print{
     body{ background:#fff; color:#111; }
-    body::before, #confetti, .topbar, .results-actions, .toast, .view-controls, .intro{ display:none !important; }
+    body::before, #confetti, .topbar, .results-actions, .toast, .view-controls, .intro, .editor{ display:none !important; }
     .panel, .result-team, .stat-card{ background:#fff; border-color:#ccc; box-shadow:none; }
     .results-head h2, .stat-card .num, .result-team .price{ color:#7a5c00; text-shadow:none; }
   }
@@ -436,6 +490,31 @@
   <button class="btn btn-sm" id="back-presenter-btn">Back to presenter</button>
 </div>
 
+<div class="editor" id="editor" hidden role="dialog" aria-modal="true" aria-labelledby="editor-title">
+  <div class="editor-shell">
+    <div class="editor-head">
+      <div class="editor-titlebar">
+        <div>
+          <div class="editor-kicker"><i></i>Auction paused · only you can see this</div>
+          <h2 class="editor-title" id="editor-title" tabindex="-1">Edit auction settings</h2>
+        </div>
+        <div class="editor-actions">
+          <button class="btn btn-ghost" id="editor-cancel">Cancel</button>
+          <button class="btn btn-gold" id="editor-save">Save &amp; resume</button>
+        </div>
+      </div>
+      <div class="editor-error" id="editor-error" role="alert"></div>
+      <div class="ed-tabs" role="tablist">
+        <button class="ed-tab active" data-edtab="rules" role="tab">Rules</button>
+        <button class="ed-tab" data-edtab="teams" role="tab">Teams &amp; purses</button>
+        <button class="ed-tab" data-edtab="players" role="tab">Players &amp; batches</button>
+      </div>
+    </div>
+    <div class="ed-note">The clock is paused and your audience screen keeps showing the current player. They see none of this until you save, and nothing resets: the auction carries on from exactly where it stopped.</div>
+    <div id="editor-body"></div>
+  </div>
+</div>
+
 <div class="app">
 
   <div class="topbar">
@@ -454,6 +533,7 @@
       </div>
       <button class="btn btn-sm p-only" id="audience-window-btn" hidden title="Open a second window to show on a projector">Open audience window</button>
       <button class="btn btn-ghost btn-sm p-only" id="intro-btn" hidden>Replay intro</button>
+      <button class="btn btn-sm btn-outline-gold p-only" id="edit-settings-btn" hidden title="Pause the auction and change the rules, teams or players"><svg width="15" height="15" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M3 5h8M15 5h2M3 10h2M9 10h8M3 15h10"/><circle cx="13" cy="5" r="2"/><circle cx="7" cy="10" r="2"/><circle cx="15" cy="15" r="2"/></svg>Edit settings</button>
       <button class="btn btn-ghost btn-sm p-only" id="sound-btn">Sound on</button>
       <button class="btn btn-ghost btn-sm p-only" id="reset-btn" title="Clear everything and start over">Reset</button>
     </div>
@@ -710,7 +790,7 @@
   function makeState(){
     return {
       stage:"setup", leagueName:"", leagueLogo:null, increment:500, timerSecs:30, autoClose:true, extendClock:true,
-      teams:[], players:[], totalBatches:1, currentBatch:1, currentPlayerId:null, currentBid:null, activeTab:"pending", sound:true
+      teams:[], players:[], totalBatches:1, currentBatch:1, currentPlayerId:null, currentBid:null, activeTab:"pending", sound:true, batchMax:MAX_BATCH, defaultBase:1000
     };
   }
   function makeDraft(){
@@ -721,6 +801,7 @@
   let draft = makeDraft();
   let spinning = false, wheelRot = 0, introOn = false;
   let timeLeft = 0, timerRunning = false, timerLast = 0, timerIv = null, lastSec = -1;
+  let editing = false, editWasRunning = false, editDraft = null, editOrig = "", editTab = "rules", editSub = "pending";
 
   const getPlayer = (id) => state.players.find((p) => p.id === id);
   const getTeam = (id) => state.teams.find((t) => t.id === id);
@@ -766,7 +847,8 @@
   /* ================= SYNC BETWEEN WINDOWS ================= */
   let channel = null;
   try{ channel = new BroadcastChannel(CHANNEL_NAME); }catch(e){ channel = null; }
-  function bc(msg){ if(channel && !isMirror){ try{ channel.postMessage(msg); }catch(e){} } }
+  function rawBc(msg){ if(channel && !isMirror){ try{ channel.postMessage(msg); }catch(e){} } }
+  function bc(msg){ if(!editing) rawBc(msg); }   // while the presenter edits settings, nothing goes out to the audience window
   const bcTimer = () => bc({ t:"timer", left:timeLeft, running:timerRunning });
 
   if(channel){
@@ -774,8 +856,8 @@
       const m = ev.data || {};
       if(!isMirror){
         if(m.t === "hello"){
-          bc({ t:"assets", a:collectAssets() });
-          bc({ t:"sync", state:slimState(), rot:wheelRot, left:timeLeft, running:timerRunning, spin:spinning, intro:introOn });
+          rawBc({ t:"assets", a:collectAssets() });
+          rawBc({ t:"sync", state:slimState(), rot:wheelRot, left:timeLeft, running:editing ? editWasRunning : timerRunning, spin:spinning, intro:introOn });
         }
         return;
       }
@@ -1028,31 +1110,38 @@
 
   const readBuffer = (file) => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(new Error("read")); r.readAsArrayBuffer(file); });
 
+  // Reads an Excel/CSV list into [{name, category, price|null}]. Used by the setup screen and by the in-auction editor.
+  async function readPlayerRows(file){
+    const wb = window.XLSX.read(await readBuffer(file), { type:"array" });
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const rows = window.XLSX.utils.sheet_to_json(ws, { header:1, defval:"" });
+    let nameCol = 0, catCol = 1, priceCol = 2, start = 0;
+    const headerIdx = rows.findIndex((r) => r.some((c) => /name|player/i.test(String(c))));
+    if(headerIdx >= 0){
+      const h = rows[headerIdx].map((c) => String(c).toLowerCase());
+      const find = (re, fallback) => { const i = h.findIndex((c) => re.test(c)); return i >= 0 ? i : fallback; };
+      nameCol = find(/name|player/, 0); catCol = find(/categ|level|grade|division|type/, 1); priceCol = find(/price|base|amount/, 2);
+      start = headerIdx + 1;
+    }
+    const out = []; let custom = 0;
+    for(let i = start; i < rows.length; i++){
+      const r = rows[i], name = String(r[nameCol] || "").trim();
+      if(!name) continue;
+      const rawCat = String(r[catCol] || "").trim();
+      let cat = catFromText(rawCat);
+      if(!cat){ cat = rawCat || CATEGORIES[0]; if(rawCat) custom++; }
+      const price = parseInt(String(r[priceCol] || "").replace(/[^0-9]/g, ""), 10);
+      out.push({ name:name, category:cat, price:isNaN(price) ? null : price });
+    }
+    return { rows:out, custom:custom };
+  }
+
   async function importExcel(file){
     if(!window.XLSX){ toast("The Excel reader didn't load. Check your internet connection and try again, or paste the list instead."); return; }
     try{
-      const wb = window.XLSX.read(await readBuffer(file), { type:"array" });
-      const ws = wb.Sheets[wb.SheetNames[0]];
-      const rows = window.XLSX.utils.sheet_to_json(ws, { header:1, defval:"" });
-      let nameCol = 0, catCol = 1, priceCol = 2, start = 0;
-      const headerIdx = rows.findIndex((r) => r.some((c) => /name|player/i.test(String(c))));
-      if(headerIdx >= 0){
-        const h = rows[headerIdx].map((c) => String(c).toLowerCase());
-        const find = (re, fallback) => { const i = h.findIndex((c) => re.test(c)); return i >= 0 ? i : fallback; };
-        nameCol = find(/name|player/, 0); catCol = find(/categ|level|grade|division|type/, 1); priceCol = find(/price|base|amount/, 2);
-        start = headerIdx + 1;
-      }
-      let added = 0, custom = 0;
-      for(let i = start; i < rows.length; i++){
-        const r = rows[i], name = String(r[nameCol] || "").trim();
-        if(!name) continue;
-        const rawCat = String(r[catCol] || "").trim();
-        let cat = catFromText(rawCat);
-        if(!cat){ cat = rawCat || CATEGORIES[0]; if(rawCat) custom++; }
-        const price = parseInt(String(r[priceCol] || "").replace(/[^0-9]/g, ""), 10);
-        addDraftPlayer(name, cat, isNaN(price) ? draft.defaultBase : price);
-        added++;
-      }
+      const res = await readPlayerRows(file);
+      res.rows.forEach((r) => addDraftPlayer(r.name, r.category, r.price == null ? draft.defaultBase : r.price));
+      const added = res.rows.length, custom = res.custom;
       renderDraftPlayers(); saveState();
       toast(added ? "Imported " + added + " player" + (added === 1 ? "" : "s") + " from " + file.name + (custom ? " (" + custom + " with categories not on the standard list)" : "") : "No players found. Check that the file has a Player Name column.");
     }catch(e){ toast("Couldn't read that file. Use .xlsx or .csv with Player Name and Category columns."); }
@@ -1067,17 +1156,24 @@
     try{ window.XLSX.writeFile(wb, "player-list-template.xlsx"); }catch(e){ toast("Your browser blocked the download. Try opening the tool in its own tab."); }
   });
 
-  async function importPhotos(files){
+  // Matches photo files to players by file name. Used by the setup screen and by the in-auction editor.
+  async function matchPhotos(files, list){
     let matched = 0; const missed = [];
     for(const f of files){
       const base = normKey(f.name.replace(/\.[^.]+$/, ""));
-      let p = draft.players.find((pl) => normKey(pl.name) === base);
-      if(!p){ const c = draft.players.filter((pl) => base && normKey(pl.name) && (base.includes(normKey(pl.name)) || normKey(pl.name).includes(base))); if(c.length === 1) p = c[0]; }
+      let p = list.find((pl) => normKey(pl.name) === base);
+      if(!p){ const c = list.filter((pl) => base && normKey(pl.name) && (base.includes(normKey(pl.name)) || normKey(pl.name).includes(base))); if(c.length === 1) p = c[0]; }
       if(!p){ missed.push(f.name); continue; }
       try{ p.photo = await processImage(f, "photo"); matched++; }catch(e){ missed.push(f.name); }
     }
-    renderDraftPlayers(); saveState();
-    toast(matched + " photo" + (matched === 1 ? "" : "s") + " matched" + (missed.length ? ". No match for: " + missed.slice(0, 3).join(", ") + (missed.length > 3 ? " and " + (missed.length - 3) + " more" : "") : "."));
+    return { matched:matched, missed:missed };
+  }
+  function photoToast(r){
+    toast(r.matched + " photo" + (r.matched === 1 ? "" : "s") + " matched" + (r.missed.length ? ". No match for: " + r.missed.slice(0, 3).join(", ") + (r.missed.length > 3 ? " and " + (r.missed.length - 3) + " more" : "") : "."));
+  }
+  async function importPhotos(files){
+    const r = await matchPhotos(files, draft.players);
+    renderDraftPlayers(); saveState(); photoToast(r);
   }
   $("photos-input").addEventListener("change", async (e) => { if(e.target.files && e.target.files.length) await importPhotos(Array.from(e.target.files)); e.target.value = ""; });
 
@@ -1099,6 +1195,7 @@
     state.increment = Math.max(1, parseInt(draft.increment, 10) || 1);
     state.timerSecs = clamp(parseInt(draft.timerSecs, 10) || 30, 5, 300);
     state.autoClose = !!draft.autoClose; state.extendClock = !!draft.extendClock;
+    state.batchMax = clamp(parseInt(draft.batchMax, 10) || MAX_BATCH, 1, MAX_BATCH); state.defaultBase = Math.max(0, parseInt(draft.defaultBase, 10) || 0);
     state.teams = teams.map((t, i) => ({ id:uid("t"), name:t.name.trim(), purse:t.purse, spent:0, color:TEAM_COLORS[i % TEAM_COLORS.length], logo:t.logo || null, players:[] }));
     state.players = players; state.totalBatches = sizes.length; state.currentBatch = 1;
     state.currentPlayerId = null; state.currentBid = null; state.activeTab = "pending"; state.stage = "auction";
@@ -1558,6 +1655,343 @@
   $("back-btn").addEventListener("click", () => { state.stage = "auction"; saveState(); render(); });
   $("new-auction-btn").addEventListener("click", () => { if(window.confirm("Start a new auction? This clears all teams, players and results.")) resetAll(); });
 
+  /* ================= EDIT SETTINGS DURING THE AUCTION (presenter only) ================= */
+  // The editor works on a private copy of the auction. The audience window hears nothing until "Save & resume",
+  // and Cancel throws the copy away, so nothing changes until the presenter says so.
+  let edNew = { cat:CATEGORIES[0], price:null };
+  const TEAM_CAP = 12;
+  const edTeam = (id) => editDraft.teams.find((t) => t.id === id);
+  const edPlayer = (id) => editDraft.players.find((p) => p.id === id);
+  const numOr = (v, fb) => { const n = parseInt(v, 10); return isNaN(n) ? fb : n; };
+  const baseDefault = () => (typeof state.defaultBase === "number" ? state.defaultBase : 1000);
+  const catOptions = (sel) => CATEGORIES.concat(sel && CATEGORIES.indexOf(sel) < 0 ? [sel] : []).map((c) => "<option" + (c === sel ? " selected" : "") + ">" + esc(c) + "</option>").join("");
+
+  function cloneForEdit(){
+    return {
+      leagueName:state.leagueName || "", leagueLogo:state.leagueLogo || null,
+      timerSecs:state.timerSecs, increment:state.increment, autoClose:!!state.autoClose, extendClock:!!state.extendClock,
+      batchMax:clamp(parseInt(state.batchMax, 10) || MAX_BATCH, 1, MAX_BATCH), freshClock:false,
+      teams:JSON.parse(JSON.stringify(state.teams)), players:JSON.parse(JSON.stringify(state.players))
+    };
+  }
+  function nextTeamColor(teams){
+    const used = teams.map((t) => t.color);
+    return TEAM_COLORS.find((c) => used.indexOf(c) < 0) || TEAM_COLORS[teams.length % TEAM_COLORS.length];
+  }
+  // New players join the last batch that still has room (never more than the batch limit), otherwise a fresh batch.
+  function pickBatchForNew(list){
+    const cap = clamp(parseInt(editDraft.batchMax, 10) || MAX_BATCH, 1, MAX_BATCH);
+    let maxB = state.currentBatch;
+    list.forEach((p) => { if((p.batch || 1) > maxB) maxB = p.batch; });
+    return list.filter((p) => p.batch === maxB).length < cap ? maxB : maxB + 1;
+  }
+  function newPlayerObj(name, category, basePrice){
+    return { id:uid("p"), name:name, category:category, basePrice:basePrice, photo:null, batch:pickBatchForNew(editDraft.players), status:"pending", soldTeamId:null, soldPrice:null };
+  }
+  // Closes any gaps left by moving or removing players so batches stay numbered 1, 2, 3 with no empty ones.
+  function normalizeBatches(){
+    const bn = (p) => parseInt(p.batch, 10) || state.currentBatch;
+    const nums = Array.from(new Set(state.players.map(bn))).sort((a, b) => a - b);
+    if(!nums.length){ state.totalBatches = 1; state.currentBatch = 1; return; }
+    const map = new Map(); nums.forEach((n, i) => map.set(n, i + 1));
+    const cur = nums.find((n) => n >= state.currentBatch);
+    state.players.forEach((p) => { p.batch = map.get(bn(p)); });
+    state.currentBatch = map.get(cur != null ? cur : nums[nums.length - 1]);
+    state.totalBatches = nums.length;
+  }
+
+  /* ----- open / close ----- */
+  function setInert(on){ const app = document.querySelector(".app"); if(app){ try{ app.inert = on; }catch(e){} } }
+
+  function openEditor(){
+    if(isMirror || state.stage !== "auction" || editing || !$("intro").hidden) return;
+    if(spinning){ toast("Wait for the wheel to stop, then open the settings."); return; }
+    if(timerRunning){ const now = performance.now(); timeLeft = Math.max(0.05, timeLeft - (now - timerLast) / 1000); timerLast = now; }
+    editWasRunning = timerRunning;
+    editing = true; timerRunning = false;          // from here nothing is sent to the audience window
+    updateTimerUI();
+    editDraft = cloneForEdit(); editOrig = JSON.stringify(editDraft);
+    editTab = "rules"; editSub = "pending"; edNew = { cat:CATEGORIES[0], price:null };
+    $("editor-error").textContent = "";
+    document.body.style.overflow = "hidden"; setInert(true);
+    $("editor").hidden = false; $("editor").scrollTop = 0;
+    renderEditor();
+    $("editor-title").focus();
+  }
+  function closeEditor(){
+    editing = false; editDraft = null; editOrig = "";
+    $("editor").hidden = true; document.body.style.overflow = ""; setInert(false);
+  }
+  function resumeClockAfterEdit(){
+    if(editWasRunning && state.currentPlayerId){ timerRunning = true; timerLast = performance.now(); ensureTimerLoop(); }
+    editWasRunning = false;
+  }
+  function cancelEditor(force){
+    if(!editing) return;
+    if(!force && JSON.stringify(editDraft) !== editOrig && !window.confirm("Discard your changes and resume the auction?")) return;
+    closeEditor(); resumeClockAfterEdit(); render(); bcTimer();
+    toast("No changes made. The auction carries on.");
+    $("edit-settings-btn").focus();
+  }
+  function editFail(msg, tab){
+    $("editor-error").textContent = msg;
+    if(tab && tab !== editTab){ editTab = tab; renderEditor(); }
+    $("editor").scrollTop = 0;
+  }
+
+  function applyEditor(){
+    if(!editing) return;
+    const d = editDraft; $("editor-error").textContent = "";
+    const secs = numOr(d.timerSecs, 0), inc = numOr(d.increment, 0);
+    if(secs < 5 || secs > 300) return editFail("Auction time must be between 5 and 300 seconds.", "rules");
+    if(inc < 1) return editFail("The bid increment must be at least ₹1.", "rules");
+    if(d.teams.length < 2) return editFail("You need at least 2 teams.", "teams");
+    if(d.teams.some((t) => !String(t.name || "").trim())) return editFail("Every team needs a name.", "teams");
+    if(d.players.some((p) => !String(p.name || "").trim())) return editFail("Every player needs a name.", "players");
+
+    // A bid can only stand if its team still exists and can still afford it.
+    let clearMsg = "";
+    if(state.currentBid){
+      const lt = d.teams.find((t) => t.id === state.currentBid.teamId);
+      if(!lt) clearMsg = "The team leading the bid is no longer in the auction.";
+      else if(lt.purse < state.currentBid.amount) clearMsg = lt.name.trim() + " is leading at " + fmt(state.currentBid.amount) + " but would only have " + fmt(lt.purse) + " left.";
+    }
+    if(clearMsg && !window.confirm(clearMsg + "\n\nThe current bid will be cleared and bidding restarts for this player. Continue?")) return;
+
+    state.leagueName = d.leagueName.trim() || "Player Auction";
+    state.leagueLogo = d.leagueLogo || null;
+    state.timerSecs = secs; state.increment = inc;
+    state.autoClose = !!d.autoClose; state.extendClock = !!d.extendClock;
+    state.batchMax = clamp(numOr(d.batchMax, MAX_BATCH), 1, MAX_BATCH);
+    d.teams.forEach((t) => { t.name = t.name.trim(); });
+    d.players.forEach((p) => { p.name = p.name.trim(); });
+    state.teams = d.teams; state.players = d.players;
+    state.teams.forEach((t) => t.players.forEach((tp) => { const pl = getPlayer(tp.id); if(pl){ tp.name = pl.name; tp.category = pl.category; } }));
+    normalizeBatches();
+    if(clearMsg) state.currentBid = null;
+    if(d.freshClock && state.currentPlayerId) timeLeft = state.timerSecs;
+
+    closeEditor(); resumeClockAfterEdit();
+    ASSETS = collectAssets(); bc({ t:"assets", a:ASSETS });   // the audience window now hears about everything at once
+    saveState();
+    render(); bcTimer();
+    toast("Settings saved. The auction carries on.");
+    $("edit-settings-btn").focus();
+  }
+
+  /* ----- tabs ----- */
+  function renderEditor(){
+    document.querySelectorAll(".ed-tab").forEach((b) => { const on = b.dataset.edtab === editTab; b.classList.toggle("active", on); b.setAttribute("aria-selected", on ? "true" : "false"); });
+    $("editor-body").innerHTML = editTab === "rules" ? rulesHtml() : editTab === "teams" ? teamsHtml() : playersHtml();
+    if(editTab === "rules") bindRules(); else if(editTab === "teams") bindTeams(); else bindPlayers();
+  }
+
+  /* ----- Rules tab ----- */
+  function rulesHtml(){
+    const d = editDraft, cp = getPlayer(state.currentPlayerId);
+    return '<div class="ed-card"><h3>League</h3>' +
+      '<div class="league-row"><label class="logo-pick" title="Change the league logo"><img src="' + leagueSrc(d.leagueLogo) + '" alt="League logo"><span class="plus">+</span><input type="file" id="ed-league-logo" accept="image/*" hidden></label>' +
+      '<div class="field"><label for="ed-league-name">League name</label><input type="text" id="ed-league-name" value="' + esc(d.leagueName) + '"></div></div>' +
+      (d.leagueLogo ? '<p class="hint"><button class="btn btn-ghost btn-sm" id="ed-league-remove">Remove logo</button></p>' : '<p class="hint">Tap the square to change the logo.</p>') +
+      '</div>' +
+      '<div class="ed-card"><h3>Clock &amp; bidding</h3>' +
+      '<div class="field-row"><div class="field"><label for="ed-timer">Auction time per player (seconds)</label><input type="number" id="ed-timer" min="5" max="300" value="' + d.timerSecs + '"></div>' +
+      '<div class="field"><label for="ed-inc">Bid increment (₹)</label><input type="number" id="ed-inc" min="1" value="' + d.increment + '"><p class="hint">Goes up by another ₹1,000 once a bid reaches ₹50,000.</p></div></div>' +
+      '<div class="check-list">' +
+        '<div class="field" style="margin:0;"><label class="check"><input type="checkbox" id="ed-auto"' + (d.autoClose ? " checked" : "") + '><span>Sell automatically when the clock reaches zero (unsold if nobody bid)</span></label></div>' +
+        '<div class="field" style="margin:0;"><label class="check"><input type="checkbox" id="ed-extend"' + (d.extendClock ? " checked" : "") + '><span>Extend the clock to 10 seconds when a bid lands in the last 10</span></label></div>' +
+        (cp ? '<div class="field" style="margin:0;"><label class="check"><input type="checkbox" id="ed-fresh"' + (d.freshClock ? " checked" : "") + '><span>Restart the clock for <b>' + esc(cp.name) + '</b> with the new time (' + Math.ceil(timeLeft) + 's left right now)</span></label></div>' : "") +
+      '</div><p class="hint" style="margin-top:14px;">The new increment applies to the very next bid, and the new time to the next player. The player on the block keeps the time they have left unless you tick the box above.</p></div>';
+  }
+  function bindRules(){
+    const d = editDraft;
+    $("ed-league-name").addEventListener("input", (e) => { d.leagueName = e.target.value; });
+    $("ed-league-logo").addEventListener("change", async (e) => {
+      const f = e.target.files && e.target.files[0]; if(!f) return;
+      try{ d.leagueLogo = await processImage(f, "logo"); renderEditor(); }catch(err){ toast("Couldn't read that image. Try a PNG or JPG."); }
+    });
+    const rm = $("ed-league-remove"); if(rm) rm.addEventListener("click", () => { d.leagueLogo = null; renderEditor(); });
+    $("ed-timer").addEventListener("input", (e) => { d.timerSecs = numOr(e.target.value, 0); });
+    $("ed-inc").addEventListener("input", (e) => { d.increment = numOr(e.target.value, 0); });
+    $("ed-auto").addEventListener("change", (e) => { d.autoClose = e.target.checked; });
+    $("ed-extend").addEventListener("change", (e) => { d.extendClock = e.target.checked; });
+    const fc = $("ed-fresh"); if(fc) fc.addEventListener("change", (e) => { d.freshClock = e.target.checked; });
+  }
+
+  /* ----- Teams tab ----- */
+  function teamsHtml(){
+    const d = editDraft;
+    const rows = d.teams.map((t) => {
+      const locked = t.players.length > 0, tooFew = d.teams.length <= 2;
+      return '<div class="ed-team" style="--tc:' + t.color + '">' +
+        '<label class="logo-pick small" style="--tc:' + t.color + '" title="Change the logo for ' + esc(t.name) + '"><img src="' + teamLogo(t) + '" alt=""><span class="plus">+</span><input type="file" accept="image/*" hidden data-tlogo="' + t.id + '"></label>' +
+        '<div class="ed-team-main"><input type="text" class="ed-input" data-tname="' + t.id + '" value="' + esc(t.name) + '" aria-label="Team name" placeholder="Team name">' +
+          '<div class="ed-team-meta">' + t.players.length + ' player' + (t.players.length === 1 ? "" : "s") + ' won · ' + fmt(t.spent) + ' spent</div></div>' +
+        '<div class="ed-purse"><label for="tp-' + t.id + '">Remaining purse</label><span class="ed-money"><span>₹</span><input type="number" class="ed-input" id="tp-' + t.id + '" data-tpurse="' + t.id + '" min="0" value="' + t.purse + '"></span></div>' +
+        '<button class="btn btn-red btn-sm" data-tremove="' + t.id + '"' + ((locked || tooFew) ? ' disabled title="' + (locked ? "This team has already won players" : "You need at least 2 teams") + '"' : "") + '>Remove</button></div>';
+    }).join("");
+    const total = d.teams.reduce((m, t) => Math.max(m, t.purse + t.spent), 0) || 10000;
+    return '<div class="ed-card"><h3>Teams in the auction</h3>' + rows +
+        '<p class="hint">Remaining purse is what a team still has to spend. Changing it doesn\'t touch what they\'ve already spent. A team that has won players can\'t be removed.</p></div>' +
+      '<div class="ed-card"><h3>Add a team</h3><div class="ed-add">' +
+        '<div class="field"><label for="ed-new-team">Team name</label><input type="text" id="ed-new-team" placeholder="e.g. Pune Panthers"></div>' +
+        '<div class="field"><label for="ed-new-purse">Starting purse (₹)</label><input type="number" id="ed-new-purse" min="0" value="' + total + '"></div>' +
+        '<button class="btn btn-gold" id="ed-add-team"' + (d.teams.length >= TEAM_CAP ? " disabled" : "") + '>Add team</button></div>' +
+        '<p class="hint">' + (d.teams.length >= TEAM_CAP ? "The most teams is 12." : "A new team can bid from the next bid onward. Tap its circle afterwards to add a logo.") + '</p></div>';
+  }
+  function bindTeams(){
+    const body = $("editor-body");
+    body.querySelectorAll("[data-tname]").forEach((el) => el.addEventListener("input", () => { edTeam(el.dataset.tname).name = el.value; }));
+    body.querySelectorAll("[data-tpurse]").forEach((el) => el.addEventListener("input", () => { edTeam(el.dataset.tpurse).purse = Math.max(0, numOr(el.value, 0)); }));
+    body.querySelectorAll("[data-tlogo]").forEach((el) => el.addEventListener("change", async () => {
+      const f = el.files && el.files[0]; if(!f) return;
+      try{ edTeam(el.dataset.tlogo).logo = await processImage(f, "logo"); renderEditor(); }catch(err){ toast("Couldn't read that image. Try a PNG or JPG."); }
+    }));
+    body.querySelectorAll("[data-tremove]").forEach((el) => el.addEventListener("click", () => {
+      editDraft.teams = editDraft.teams.filter((t) => t.id !== el.dataset.tremove); renderEditor();
+    }));
+    $("ed-add-team").addEventListener("click", () => {
+      const nameEl = $("ed-new-team"), name = nameEl.value.trim();
+      if(!name){ nameEl.focus(); return; }
+      const d = editDraft; if(d.teams.length >= TEAM_CAP) return;
+      d.teams.push({ id:uid("t"), name:name, purse:Math.max(0, numOr($("ed-new-purse").value, 0)), spent:0, color:nextTeamColor(d.teams), logo:null, players:[] });
+      renderEditor(); toast(name + " added. Tap its circle to add a logo.");
+    });
+    $("ed-new-team").addEventListener("keydown", (e) => { if(e.key === "Enter"){ e.preventDefault(); $("ed-add-team").click(); } });
+  }
+
+  /* ----- Players tab ----- */
+  function batchOptions(p){
+    const d = editDraft; let maxB = state.currentBatch;
+    d.players.forEach((x) => { if((x.batch || 1) > maxB) maxB = x.batch; });
+    let h = "";
+    for(let n = state.currentBatch; n <= maxB + 1; n++){
+      const inN = d.players.filter((x) => x.batch === n && x.id !== p.id).length;
+      const full = inN >= MAX_BATCH && n !== p.batch;
+      h += '<option value="' + n + '"' + (n === p.batch ? " selected" : "") + (full ? " disabled" : "") + '>Batch ' + n + (n === maxB + 1 ? " (new)" : "") + (full ? " · full" : "") + '</option>';
+    }
+    return h;
+  }
+  function playerRowHtml(p){
+    const d = editDraft, block = p.id === state.currentPlayerId, hasBid = block && !!state.currentBid;
+    const team = p.soldTeamId ? d.teams.find((t) => t.id === p.soldTeamId) : null;
+    let h = '<div class="ed-prow' + (block ? " onblock" : "") + '">' +
+      '<label class="avatar-btn" title="Change the photo for ' + esc(p.name) + '">' + (p.photo ? '<img src="' + p.photo + '" alt="">' : esc(initialsOf(p.name))) + '<span class="cam">+</span><input type="file" accept="image/*" hidden data-pphoto="' + p.id + '"></label>' +
+      '<input type="text" class="ed-input f-name" data-pname="' + p.id + '" value="' + esc(p.name) + '" aria-label="Player name">' +
+      '<select class="ed-input f-cat" data-pcat="' + p.id + '" aria-label="Category">' + catOptions(p.category) + '</select>';
+    if(p.status !== "sold"){
+      h += '<span class="ed-money f-base"><span>₹</span><input type="number" class="ed-input" min="0" data-pbase="' + p.id + '" value="' + p.basePrice + '" aria-label="Base price"' + (hasBid ? ' disabled title="A bid is already in, so the base price is locked"' : "") + '></span>';
+    }
+    if(p.status === "pending"){
+      h += '<select class="ed-input f-batch" data-pbatch="' + p.id + '" aria-label="Batch"' + (block ? ' disabled title="On the block right now"' : "") + '>' + batchOptions(p) + '</select>';
+    }
+    h += '<span class="f-act">';
+    if(block) h += '<span class="chip gold">On the block</span>';
+    if(p.status === "sold") h += '<span class="chip gold">' + esc(team ? team.name : "?") + ' · ' + fmt(p.soldPrice) + '</span><button class="btn btn-sm" data-pundo="' + p.id + '">Undo sale</button>';
+    if(p.status === "unsold") h += '<button class="btn btn-sm" data-preauction="' + p.id + '">Re-auction</button>';
+    if(p.status !== "sold") h += '<button class="remove-x" data-premove="' + p.id + '"' + (block ? ' disabled title="Put this player back on the wheel first"' : ' title="Remove"') + ' aria-label="Remove ' + esc(p.name) + '">✕</button>';
+    return h + '</span></div>';
+  }
+  function playersHtml(){
+    const d = editDraft, c = { pending:0, sold:0, unsold:0 };
+    d.players.forEach((p) => { c[p.status] = (c[p.status] || 0) + 1; });
+    const list = d.players.filter((p) => p.status === editSub);
+    let rows = "";
+    if(!list.length){ rows = '<div class="queue-empty">Nothing here.</div>'; }
+    else if(editSub === "pending"){
+      let last = null;
+      list.slice().sort((a, b) => a.batch - b.batch).forEach((p) => {
+        if(p.batch !== last){ last = p.batch; rows += '<div class="ed-batch-h">Batch ' + p.batch + ' <span>' + list.filter((x) => x.batch === p.batch).length + ' waiting</span></div>'; }
+        rows += playerRowHtml(p);
+      });
+    } else { rows = list.map(playerRowHtml).join(""); }
+    const seg = [["pending", "To auction"], ["sold", "Sold"], ["unsold", "Unsold"]].map((x) => '<button data-sub="' + x[0] + '" class="' + (editSub === x[0] ? "on" : "") + '">' + x[1] + ' · ' + c[x[0]] + '</button>').join("");
+    return '<div class="ed-card"><h3>Add players</h3>' +
+        '<div class="player-add-row">' +
+          '<div class="field" style="margin-bottom:0;"><label for="ed-p-name">Player name</label><input type="text" id="ed-p-name" placeholder="Player name"></div>' +
+          '<div class="field" style="margin-bottom:0;"><label for="ed-p-category">Category</label><select id="ed-p-category">' + catOptions(edNew.cat) + '</select></div>' +
+          '<div class="field" style="margin-bottom:0;"><label for="ed-p-price">Base (₹)</label><input type="number" id="ed-p-price" min="0" value="' + (edNew.price != null ? edNew.price : baseDefault()) + '"></div>' +
+          '<button class="btn btn-gold btn-sm" id="ed-add-player">Add</button></div>' +
+        '<div class="upload-row" style="margin-top:14px;">' +
+          '<label class="btn file-btn">Add from Excel<input type="file" id="ed-excel" accept=".xlsx,.xls,.csv" hidden></label>' +
+          '<label class="btn file-btn">Upload photos<input type="file" id="ed-photos" accept="image/*" multiple hidden></label></div>' +
+        '<p class="hint">Photos match by file name, like "Arjun Rao.jpg". New players join the last batch that has room, and the Batch menu on any player moves them.</p>' +
+        '<div class="ed-reshuffle"><label for="ed-batchmax">Most per batch</label><input type="number" class="ed-input" id="ed-batchmax" min="1" max="15" value="' + d.batchMax + '"><button class="btn btn-sm" id="ed-reshuffle">Reshuffle upcoming batches</button></div>' +
+        '<p class="hint">Reshuffle mixes only the batches after the current one, and never the batch that is underway.</p></div>' +
+      '<div class="ed-listhead"><div class="seg" id="ed-sub">' + seg + '</div></div>' + rows;
+  }
+  function addEditPlayer(){
+    const nameEl = $("ed-p-name"), name = nameEl.value.trim();
+    if(!name){ nameEl.focus(); return; }
+    editDraft.players.push(newPlayerObj(name, $("ed-p-category").value, Math.max(0, numOr($("ed-p-price").value, baseDefault()))));
+    editSub = "pending"; renderEditor(); $("ed-p-name").focus();
+  }
+  function bindPlayers(){
+    const body = $("editor-body");
+    body.querySelectorAll("[data-sub]").forEach((b) => b.addEventListener("click", () => { editSub = b.dataset.sub; renderEditor(); }));
+    $("ed-add-player").addEventListener("click", addEditPlayer);
+    $("ed-p-name").addEventListener("keydown", (e) => { if(e.key === "Enter"){ e.preventDefault(); addEditPlayer(); } });
+    $("ed-p-category").addEventListener("change", (e) => { edNew.cat = e.target.value; });
+    $("ed-p-price").addEventListener("input", (e) => { edNew.price = e.target.value; });
+
+    $("ed-excel").addEventListener("change", async (e) => {
+      const f = e.target.files && e.target.files[0]; if(!f) return;
+      if(!window.XLSX){ toast("The Excel reader didn't load. Check your internet connection and try again."); return; }
+      try{
+        const res = await readPlayerRows(f);
+        res.rows.forEach((r) => editDraft.players.push(newPlayerObj(r.name, r.category, r.price == null ? baseDefault() : r.price)));
+        editSub = "pending"; renderEditor();
+        toast(res.rows.length ? "Added " + res.rows.length + " player" + (res.rows.length === 1 ? "" : "s") + " from " + f.name : "No players found. Check that the file has a Player Name column.");
+      }catch(err){ toast("Couldn't read that file. Use .xlsx or .csv with Player Name and Category columns."); }
+    });
+    $("ed-photos").addEventListener("change", async (e) => {
+      const files = Array.from(e.target.files || []); if(!files.length) return;
+      const r = await matchPhotos(files, editDraft.players); renderEditor(); photoToast(r);
+    });
+
+    $("ed-batchmax").addEventListener("input", (e) => { editDraft.batchMax = clamp(numOr(e.target.value, MAX_BATCH), 1, MAX_BATCH); });
+    $("ed-batchmax").addEventListener("change", (e) => { e.target.value = editDraft.batchMax; });
+    $("ed-reshuffle").addEventListener("click", () => {
+      const d = editDraft, cap = clamp(numOr(d.batchMax, MAX_BATCH), 1, MAX_BATCH);
+      const pool = d.players.filter((p) => p.status === "pending" && p.batch > state.currentBatch && p.id !== state.currentPlayerId);
+      if(pool.length < 2){ toast("Nothing to reshuffle yet. It only mixes the batches after the current one."); return; }
+      shuffle(pool);
+      const sizes = batchSizes(pool.length, cap); let idx = 0;
+      sizes.forEach((sz, i) => { for(let k = 0; k < sz; k++){ pool[idx++].batch = state.currentBatch + 1 + i; } });
+      renderEditor(); toast("Upcoming players reshuffled into " + sizes.length + " batch" + (sizes.length === 1 ? "" : "es") + ".");
+    });
+
+    body.querySelectorAll("[data-pname]").forEach((el) => el.addEventListener("input", () => { edPlayer(el.dataset.pname).name = el.value; }));
+    body.querySelectorAll("[data-pcat]").forEach((el) => el.addEventListener("change", () => { edPlayer(el.dataset.pcat).category = el.value; }));
+    body.querySelectorAll("[data-pbase]").forEach((el) => el.addEventListener("input", () => { edPlayer(el.dataset.pbase).basePrice = Math.max(0, numOr(el.value, 0)); }));
+    body.querySelectorAll("[data-pbatch]").forEach((el) => el.addEventListener("change", () => { edPlayer(el.dataset.pbatch).batch = numOr(el.value, state.currentBatch); renderEditor(); }));
+    body.querySelectorAll("[data-pphoto]").forEach((el) => el.addEventListener("change", async () => {
+      const f = el.files && el.files[0]; if(!f) return;
+      try{ edPlayer(el.dataset.pphoto).photo = await processImage(f, "photo"); renderEditor(); }catch(err){ toast("Couldn't read that image. Try a JPG or PNG."); }
+    }));
+    body.querySelectorAll("[data-premove]").forEach((el) => el.addEventListener("click", () => {
+      editDraft.players = editDraft.players.filter((p) => p.id !== el.dataset.premove); renderEditor();
+    }));
+    body.querySelectorAll("[data-preauction]").forEach((el) => el.addEventListener("click", () => {
+      const p = edPlayer(el.dataset.preauction); p.status = "pending"; p.batch = state.currentBatch; renderEditor();
+      toast(p.name + " is back in the current batch.");
+    }));
+    body.querySelectorAll("[data-pundo]").forEach((el) => el.addEventListener("click", () => {
+      const d = editDraft, p = edPlayer(el.dataset.pundo); if(!p || p.status !== "sold") return;
+      const t = d.teams.find((x) => x.id === p.soldTeamId);
+      if(t){ t.purse += p.soldPrice; t.spent = Math.max(0, t.spent - p.soldPrice); t.players = t.players.filter((tp) => tp.id !== p.id); }
+      const price = p.soldPrice;
+      p.status = "pending"; p.soldTeamId = null; p.soldPrice = null; p.batch = state.currentBatch;
+      renderEditor(); toast("Sale undone. " + fmt(price) + " went back to " + (t ? t.name : "the team") + ", and " + p.name + " is back in the current batch.");
+    }));
+  }
+
+  document.querySelectorAll(".ed-tab").forEach((b) => b.addEventListener("click", () => { if(!editing) return; editTab = b.dataset.edtab; renderEditor(); $("editor").scrollTop = 0; }));
+  $("edit-settings-btn").addEventListener("click", openEditor);
+  $("editor-save").addEventListener("click", applyEditor);
+  $("editor-cancel").addEventListener("click", () => cancelEditor(false));
+  document.addEventListener("keydown", (e) => { if(e.key === "Escape" && editing) cancelEditor(false); });
+
   /* ================= GLOBAL CONTROLS ================= */
   $("reset-btn").addEventListener("click", () => { if(window.confirm("Reset everything and start a new auction? This clears all teams, players and results.")) resetAll(); });
   $("sound-btn").addEventListener("click", () => { state.sound = !state.sound; saveState(); render(); if(state.sound){ ac(); sfx.bid(); } });
@@ -1610,6 +2044,7 @@
     $("sound-btn").textContent = state.sound ? "Sound on" : "Sound off";
     $("audience-window-btn").hidden = state.stage === "setup";
     $("intro-btn").hidden = state.stage !== "auction";
+    $("edit-settings-btn").hidden = state.stage !== "auction" || isMirror;
 
     $("waiting").hidden = !(aud && state.stage === "setup");
     $("setup-screen").hidden = !(state.stage === "setup" && !aud);
